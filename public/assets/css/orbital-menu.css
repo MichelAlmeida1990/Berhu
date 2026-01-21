@@ -1,0 +1,394 @@
+/* Orbital Menu for Berhu Profile */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+:root {
+  --orbital-size: 10rem;
+  --orbital-center: 18rem;
+  --rotation-duration: 60s;
+  --primary-purple: #667eea;
+  --secondary-purple: #764ba2;
+  --spiritual-gold: #d4af37;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #1e3a5f 0%, #667eea 50%, #764ba2 100%);
+  overflow: hidden;
+}
+
+/* Keyframes */
+@keyframes appear {
+  0% {
+    top: 0;
+    transform-origin: var(--orbital-size) 0;
+    opacity: 0;
+  }
+  100% {
+    top: -25rem;
+    transform-origin: var(--orbital-size) 25rem;
+    opacity: 1;
+  }
+}
+
+@keyframes menu-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes scaling {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(102, 126, 234, 0.9);
+  }
+}
+
+/* Orbital Menu */
+.orbital-menu {
+  position: relative;
+  width: 60rem;
+  height: 60rem;
+}
+
+.orbital-menu__list {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50rem;
+  height: 50rem;
+  margin: -25rem 0 0 -25rem;
+  animation: menu-rotation linear var(--rotation-duration) infinite;
+  border-radius: 50%;
+}
+
+.orbital-menu__list:hover {
+  animation-play-state: paused;
+}
+
+.orbital-menu__list:hover .orbital-menu__link > * {
+  animation-play-state: paused;
+}
+
+.orbital-menu__item {
+  position: absolute;
+  animation: appear 2s forwards;
+  left: calc(var(--orbital-size) * -1);
+  top: 0;
+  transform-origin: var(--orbital-size) 0;
+}
+
+/* Menu Items Positioning */
+.orbital-menu__item:nth-child(1) {
+  animation-delay: 0.1s;
+  transform: rotate(0deg);
+}
+
+.orbital-menu__item:nth-child(2) {
+  animation-delay: 0.2s;
+  transform: rotate(45deg);
+}
+
+.orbital-menu__item:nth-child(3) {
+  animation-delay: 0.3s;
+  transform: rotate(90deg);
+}
+
+.orbital-menu__item:nth-child(4) {
+  animation-delay: 0.4s;
+  transform: rotate(135deg);
+}
+
+.orbital-menu__item:nth-child(5) {
+  animation-delay: 0.5s;
+  transform: rotate(180deg);
+}
+
+.orbital-menu__item:nth-child(6) {
+  animation-delay: 0.6s;
+  transform: rotate(225deg);
+}
+
+.orbital-menu__item:nth-child(7) {
+  animation-delay: 0.7s;
+  transform: rotate(270deg);
+}
+
+.orbital-menu__item:nth-child(8) {
+  animation-delay: 0.8s;
+  transform: rotate(315deg);
+}
+
+/* Menu Links */
+.orbital-menu__link {
+  position: relative;
+  display: block;
+  height: var(--orbital-size);
+  width: var(--orbital-size);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.orbital-menu__link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: scaling linear 3s infinite;
+  transition: all 0.3s ease;
+}
+
+/* Individual Menu Colors */
+.orbital-menu__item:nth-child(1) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  animation-delay: 0.33s;
+}
+
+.orbital-menu__item:nth-child(2) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #f8b5d4, #a7f3d0);
+  animation-delay: 0.66s;
+}
+
+.orbital-menu__item:nth-child(3) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #4f46e5, #9333ea);
+  animation-delay: 0.99s;
+}
+
+.orbital-menu__item:nth-child(4) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  animation-delay: 1.32s;
+}
+
+.orbital-menu__item:nth-child(5) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #ea580c, #fbbf24);
+  animation-delay: 1.65s;
+}
+
+.orbital-menu__item:nth-child(6) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #10b981, #84cc16);
+  animation-delay: 1.98s;
+}
+
+.orbital-menu__item:nth-child(7) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #f43f5e, #dc2626);
+  animation-delay: 2.31s;
+}
+
+.orbital-menu__item:nth-child(8) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  animation-delay: 2.64s;
+}
+
+/* Link Content */
+.orbital-menu__link > * {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: menu-rotation linear var(--rotation-duration) infinite;
+  animation-direction: reverse;
+  transition: 250ms ease all;
+}
+
+/* Counter-rotation for text */
+.orbital-menu__item:nth-child(1) .orbital-menu__link > * {
+  transform: rotate(0deg);
+}
+
+.orbital-menu__item:nth-child(2) .orbital-menu__link > * {
+  transform: rotate(-45deg);
+}
+
+.orbital-menu__item:nth-child(3) .orbital-menu__link > * {
+  transform: rotate(-90deg);
+}
+
+.orbital-menu__item:nth-child(4) .orbital-menu__link > * {
+  transform: rotate(-135deg);
+}
+
+.orbital-menu__item:nth-child(5) .orbital-menu__link > * {
+  transform: rotate(-180deg);
+}
+
+.orbital-menu__item:nth-child(6) .orbital-menu__link > * {
+  transform: rotate(-225deg);
+}
+
+.orbital-menu__item:nth-child(7) .orbital-menu__link > * {
+  transform: rotate(-270deg);
+}
+
+.orbital-menu__item:nth-child(8) .orbital-menu__link > * {
+  transform: rotate(-315deg);
+}
+
+.orbital-menu__link-text {
+  opacity: 0;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease;
+  width: 100%;
+  padding: 0.5rem;
+  line-height: 1.2;
+}
+
+.orbital-menu__link-icon {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 2rem;
+  transition: opacity 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Hover Effects */
+.orbital-menu__link:hover::before {
+  animation-play-state: paused;
+  filter: brightness(1.2);
+  transform: scale(1.1);
+}
+
+.orbital-menu__link:hover .orbital-menu__link-text {
+  opacity: 1;
+}
+
+.orbital-menu__link:hover .orbital-menu__link-icon {
+  opacity: 0;
+}
+
+/* Center Profile Picture */
+.orbital-menu__center-pic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--orbital-center);
+  height: var(--orbital-center);
+  margin: calc(var(--orbital-center) / -2) 0 0 calc(var(--orbital-center) / -2);
+  overflow: hidden;
+  border-radius: 50%;
+  border: 4px solid var(--spiritual-gold);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+  animation: pulse-glow 3s ease-in-out infinite;
+  z-index: 10;
+}
+
+.orbital-menu__center-pic img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.orbital-menu__center-pic img:first-child {
+  transform: scale(1);
+}
+
+.orbital-menu__center-pic img:last-child {
+  opacity: 0;
+  transform: scale(1.1);
+}
+
+.orbital-menu__center-pic:hover img:first-child {
+  transform: scale(1.05);
+}
+
+.orbital-menu__center-pic:hover img:last-child {
+  opacity: 1;
+}
+
+/* Spiritual Elements */
+.orbital-menu::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 55rem;
+  height: 55rem;
+  margin: -27.5rem 0 0 -27.5rem;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  animation: menu-rotation linear 120s infinite reverse;
+}
+
+.orbital-menu::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 45rem;
+  height: 45rem;
+  margin: -22.5rem 0 0 -22.5rem;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 50%;
+  animation: menu-rotation linear 90s infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  :root {
+    --orbital-size: 6rem;
+    --orbital-center: 12rem;
+  }
+  
+  .orbital-menu {
+    width: 40rem;
+    height: 40rem;
+  }
+  
+  .orbital-menu__list {
+    width: 30rem;
+    height: 30rem;
+    margin: -15rem 0 0 -15rem;
+  }
+  
+  .orbital-menu__link-text {
+    font-size: 0.9rem;
+  }
+  
+  .orbital-menu__link-icon {
+    font-size: 1.5rem;
+  }
+}
+
+/* Loading State */
+.orbital-menu.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.orbital-menu.loading .orbital-menu__center-pic {
+  animation-play-state: paused;
+}

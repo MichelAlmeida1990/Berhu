@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berhu - Agendamentos</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind & Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#8B5CF6',
+                            dark: '#0a0a0f',
+                            accent: '#D946EF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+    <link href="assets/css/components.css" rel="stylesheet">
+    <link href="assets/css/responsive.css" rel="stylesheet">
+    <link href="assets/css/accessibility.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen text-white">
+    
+    <!-- Header -->
+    <header class="fixed w-full z-40 transition-all duration-300 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                     <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-500 rounded-lg flex items-center justify-center relative overflow-hidden shadow-lg shadow-purple-500/20">
+                        <i class="fas fa-om text-white text-lg"></i>
+                    </div>
+                    <span class="font-display text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Berhu</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-sm font-medium hover:text-purple-400 transition-colors">Início</a>
+                    <a href="profile.html" class="text-sm font-medium hover:text-purple-400 transition-colors">Perfil</a>
+                    <a href="courses.html" class="text-sm font-medium hover:text-purple-400 transition-colors">Cursos</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="glass-button px-4 py-2 rounded-lg text-sm font-medium hover:text-purple-400 transition-colors flex items-center gap-2">
+                        <i class="fas fa-home"></i> <span class="hidden md:inline">Início</span>
+                    </a>
+                    <button id="logout-btn" class="glass-button px-4 py-2 rounded-lg text-xs font-semibold text-red-400 border border-red-500/20 hover:bg-red-500/10 transition-all">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+                Agendamentos
+            </h1>
+            <p class="text-gray-300 text-lg">
+                Agende suas sessões terapêuticas e consultas espirituais
+            </p>
+        </div>
+
+        <!-- Service Selection -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-20 mb-8">
+            <h2 class="text-xl font-semibold mb-6">Selecione um Serviço</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="service-option bg-white bg-opacity-5 rounded-lg p-4 cursor-pointer border border-transparent hover:border-purple-400 transition" data-service="reiki">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-spa text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold">Reiki</h3>
+                        <p class="text-sm text-gray-400 mt-1">Canalização de energia universal</p>
+                        <div class="text-lg font-bold text-green-300 mt-2">R$ 200</div>
+                    </div>
+                </div>
+                
+                <div class="service-option bg-white bg-opacity-5 rounded-lg p-4 cursor-pointer border border-transparent hover:border-purple-400 transition" data-service="meditation">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-om text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold">Meditação</h3>
+                        <p class="text-sm text-gray-400 mt-1">Sessões guiadas de meditação</p>
+                        <div class="text-lg font-bold text-purple-300 mt-2">R$ 150</div>
+                    </div>
+                </div>
+                
+                <div class="service-option bg-white bg-opacity-5 rounded-lg p-4 cursor-pointer border border-transparent hover:border-purple-400 transition" data-service="astrology">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-star text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold">Astrologia</h3>
+                        <p class="text-sm text-gray-400 mt-1">Mapa astral e consultas</p>
+                        <div class="text-lg font-bold text-blue-300 mt-2">R$ 197</div>
+                    </div>
+                </div>
+                
+                <div class="service-option bg-white bg-opacity-5 rounded-lg p-4 cursor-pointer border border-transparent hover:border-purple-400 transition" data-service="crystals">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-pink-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-gem text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold">Cristais</h3>
+                        <p class="text-sm text-gray-400 mt-1">Terapia com cristais</p>
+                        <div class="text-lg font-bold text-pink-300 mt-2">R$ 250</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Calendar -->
+            <div class="lg:col-span-2">
+                <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-20">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold">Calendário</h2>
+                        <div class="flex items-center space-x-2">
+                            <button id="prev-month" class="p-2 hover:bg-white hover:bg-opacity-10 rounded-lg transition">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="current-month" class="font-semibold"></span>
+                            <button id="next-month" class="p-2 hover:bg-white hover:bg-opacity-10 rounded-lg transition">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Calendar Grid -->
+                    <div class="grid grid-cols-7 gap-2 mb-2">
+                        <div class="text-center text-sm font-semibold text-gray-400">Dom</div>
+                        <div class="text-center text-sm font-semibold text-gray-400">Seg</div>
+                        <div class="text-center text-sm font-semibold text-gray-400">Ter</div>
+                        <div class="text-center text-sm font-semibold text-gray-400">Qua</div>
+                        <div class="text-center text-sm font-semibold text-gray-400">Qui</div>
+                        <div class="text-center text-sm font-semibold text-gray-400">Sex</div>
+                        <div class="text-center text-sm font-semibold text-gray-400">Sáb</div>
+                    </div>
+                    
+                    <div id="calendar-days" class="grid grid-cols-7 gap-2">
+                        <!-- Calendar days will be generated dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Time Slots -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-20 mt-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold">Horários Disponíveis</h2>
+                        <div id="selected-date-display" class="text-sm text-gray-400">
+                            <!-- Selected date will be shown here -->
+                        </div>
+                    </div>
+                    
+                    <div id="time-slots" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        <!-- Time slots will be generated dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Selected Service -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-20">
+                    <h3 class="text-lg font-semibold mb-4">Serviço Selecionado</h3>
+                    <div id="selected-service-info">
+                        <p class="text-gray-400">Selecione um serviço para continuar</p>
+                    </div>
+                </div>
+                
+                <!-- Selected Date/Time -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-20">
+                    <h3 class="text-lg font-semibold mb-4">Resumo do Agendamento</h3>
+                    <div id="selected-datetime" class="space-y-3">
+                        <div class="text-gray-400">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Selecione serviço, data e horário para continuar
+                        </div>
+                    </div>
+                    
+                    <!-- Appointment Summary (hidden initially) -->
+                    <div id="appointment-summary" class="hidden space-y-3 mt-4 pt-4 border-t border-white border-opacity-20">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Serviço:</span>
+                            <span id="summary-service" class="font-semibold"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Data:</span>
+                            <span id="summary-date" class="font-semibold"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Horário:</span>
+                            <span id="summary-time" class="font-semibold text-purple-300"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Duração:</span>
+                            <span id="summary-duration" class="font-semibold"></span>
+                        </div>
+                        <div class="flex justify-between items-center text-lg">
+                            <span class="text-gray-400">Total:</span>
+                            <span id="summary-price" class="font-bold text-purple-300"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Confirm Button -->
+                <button id="confirm-appointment" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 py-3 rounded-lg font-semibold transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg" disabled>
+                    <i class="fas fa-calendar-check mr-2"></i>Confirmar Agendamento
+                </button>
+                
+                <!-- Help Text -->
+                <div class="bg-white bg-opacity-5 rounded-lg p-4 border border-white border-opacity-10">
+                    <h4 class="font-semibold text-sm mb-2 text-purple-300">
+                        <i class="fas fa-lightbulb mr-2"></i>Dicas de Agendamento
+                    </h4>
+                    <ul class="text-xs text-gray-400 space-y-1">
+                        <li>• Escolha seu serviço preferido primeiro</li>
+                        <li>• Selecione uma data disponível no calendário</li>
+                        <li>• Horários em cinza já estão ocupados</li>
+                        <li>• Horários em verde estão disponíveis</li>
+                        <li>• Você receberá confirmação por e-mail</li>
+                    </ul>
+                </div>
+                
+                <!-- My Appointments -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-20">
+                    <h3 class="text-lg font-semibold mb-4">Meus Agendamentos</h3>
+                    <div id="my-appointments" class="space-y-3">
+                        <!-- Appointments will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal hidden">
+        <div class="modal-content max-w-md">
+            <div class="text-center">
+                <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-white text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Agendamento Confirmado!</h3>
+                <p class="text-gray-300 mb-6">Sua sessão foi agendada com sucesso. Você receberá um e-mail de confirmação.</p>
+                <button onclick="closeSuccessModal()" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg transition">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/validation.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="js/appointments.js"></script>
+</body>
+</html>

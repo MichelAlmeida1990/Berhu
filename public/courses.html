@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berhu - Cursos e Infoprodutos</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind & Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#8B5CF6',
+                            dark: '#0a0a0f',
+                            accent: '#D946EF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+    <link href="assets/css/components.css" rel="stylesheet">
+    <link href="assets/css/responsive.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen text-white">
+    
+    <!-- Header -->
+    <header class="fixed w-full z-40 transition-all duration-300 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                     <a href="index.html">
+                        <img src="img/logo_fabiana.png" alt="Fabiana Berkana" class="h-12 w-auto rounded-lg">
+                     </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-sm font-medium hover:text-purple-400 transition-colors">Início</a>
+                    <a href="profile.html" class="text-sm font-medium hover:text-purple-400 transition-colors">Perfil</a>
+                    <a href="appointments.html" class="text-sm font-medium hover:text-purple-400 transition-colors">Agendar</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="glass-button px-4 py-2 rounded-lg text-sm font-medium hover:text-purple-400 transition-colors flex items-center gap-2">
+                        <i class="fas fa-home"></i> <span class="hidden md:inline">Início</span>
+                    </a>
+                    <button id="logout-btn" class="glass-button px-4 py-2 rounded-lg text-xs font-semibold text-red-400 border border-red-500/20 hover:bg-red-500/10 transition-all">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+                Cursos e Infoprodutos
+            </h1>
+            <p class="text-gray-300 text-lg">
+                Transforme sua vida com nossos conteúdos exclusivos de desenvolvimento espiritual e bem-estar
+            </p>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-20 mb-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Search -->
+                <div class="lg:col-span-2">
+                    <div class="relative">
+                        <input type="text" id="search-input" placeholder="Buscar cursos..." 
+                               class="form-input w-full pl-10">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- Category Filter -->
+                <div>
+                    <select id="category-filter" class="form-input w-full">
+                        <option value="">Todas Categorias</option>
+                        <option value="meditation">Meditação</option>
+                        <option value="therapy">Terapia</option>
+                        <option value="course">Cursos</option>
+                        <option value="workshop">Workshops</option>
+                        <option value="ebook">E-books</option>
+                    </select>
+                </div>
+                
+                <!-- Sort -->
+                <div>
+                    <select id="sort-filter" class="form-input w-full">
+                        <option value="newest">Mais Recentes</option>
+                        <option value="popular">Mais Populares</option>
+                        <option value="price-low">Menor Preço</option>
+                        <option value="price-high">Maior Preço</option>
+                        <option value="rating">Melhor Avaliados</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Grid -->
+        <div id="courses-grid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Courses will be loaded dynamically -->
+        </div>
+
+        <!-- Load More -->
+        <div class="text-center mt-12">
+            <button id="load-more-btn" class="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-lg transition transform hover:scale-105">
+                <i class="fas fa-plus mr-2"></i>Carregar Mais
+            </button>
+        </div>
+    </main>
+
+    <!-- Course Modal -->
+    <div id="course-modal" class="modal hidden">
+        <div class="modal-content max-w-4xl">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes do Curso</h3>
+                <button class="modal-close" onclick="closeCourseModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="course-modal-content">
+                    <!-- Course details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCourseModal()">Fechar</button>
+                <button id="purchase-btn" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart mr-2"></i>Comprar Agora
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="js/courses.js"></script>
+</body>
+</html>

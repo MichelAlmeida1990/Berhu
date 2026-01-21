@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berhu - Painel Clínico</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind & Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#8B5CF6',
+                            dark: '#0a0a0f',
+                            accent: '#D946EF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Berhu Styles -->
+    <link href="assets/css/main.css" rel="stylesheet">
+    <link href="assets/css/components.css" rel="stylesheet">
+
+    <!-- Modal Styles Override for Glassmorphism -->
+    <style>
+        .berhu-modal-overlay {
+            position: fixed !important;
+            inset: 0 !important;
+            background: rgba(0, 0, 0, 0.8) !important;
+            backdrop-filter: blur(8px) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 50 !important;
+        }
+        
+        .berhu-modal {
+            background: rgba(10, 10, 15, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 1.5rem !important;
+            padding: 0 !important;
+            width: 90% !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .berhu-modal.max-w-2xl { max-width: 42rem !important; }
+        .berhu-modal.max-w-3xl { max-width: 48rem !important; }
+        .berhu-modal.max-w-5xl { max-width: 64rem !important; }
+
+        .berhu-modal-header {
+            padding: 1.5rem !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            position: sticky !important;
+            top: 0 !important;
+            background: rgba(10, 10, 15, 0.95) !important;
+            z-index: 10 !important;
+        }
+
+        .berhu-modal-title {
+            font-family: 'Outfit', sans-serif !important;
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            color: white !important;
+        }
+
+        .berhu-modal-body {
+            padding: 1.5rem !important;
+        }
+
+        .berhu-modal-close {
+            color: #9ca3af !important;
+            transition: color 0.2s !important;
+        }
+        .berhu-modal-close:hover { color: white !important; }
+
+        .berhu-modal-footer {
+            padding: 1.5rem !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+            gap: 1rem !important;
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-gray-100 font-sans selection:bg-purple-500 selection:text-white min-h-screen">
+
+    <!-- Esoteric Background (Managed by theme.js) -->
+    <div id="esotericIcons" class="fixed inset-0 overflow-hidden pointer-events-none z-0 opacity-20"></div>
+    
+    <!-- Header -->
+    <header class="fixed w-full z-40 transition-all duration-300 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-500 rounded-lg flex items-center justify-center relative overflow-hidden shadow-lg shadow-purple-500/20">
+                        <i class="fas fa-om text-white text-lg"></i>
+                    </div>
+                    <span class="font-display text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Berhu Clínica</span>
+                </div>
+                
+                    <a href="admin-clinical.html" class="text-sm font-medium text-purple-400">Painel Clínico</a>
+                    <a href="admin.html" class="text-sm font-medium hover:text-purple-400 transition-colors">Administração</a>
+                    <a href="/" class="text-sm font-medium hover:text-purple-400 transition-colors">Início</a>
+                    <a href="therapist-evaluation.html" class="text-sm font-medium hover:text-purple-400 transition-colors">Avaliações</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/5">
+                        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-[10px] font-bold text-black transform rotate-12">FB</div>
+                        <span class="text-xs font-medium text-gray-300">Fabiane Berkana</span>
+                    </div>
+                    <button id="logout-btn" class="glass-button px-4 py-2 rounded-lg text-xs font-semibold text-red-400 border border-red-500/20 hover:bg-red-500/10 transition-all">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8 pt-28 relative z-10">
+        
+        <!-- Page Header -->
+        <div class="mb-10 animate-float text-center md:text-left">
+            <h1 class="font-display text-3xl font-bold mb-2">Painel Clínico</h1>
+            <p class="text-gray-400 text-sm">Gestão completa de prontuários e avaliações terapêuticas.</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition-all group">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase tracking-wider font-semibold mb-1">Pacientes Ativos</p>
+                        <p class="text-3xl font-display font-bold text-white group-hover:scale-110 transition-transform origin-left">24</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400">
+                        <i class="fas fa-users text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition-all group">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase tracking-wider font-semibold mb-1">Sessões Hoje</p>
+                        <p class="text-3xl font-display font-bold text-white group-hover:scale-110 transition-transform origin-left">8</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400">
+                        <i class="fas fa-calendar-day text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition-all group">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase tracking-wider font-semibold mb-1">Pendências</p>
+                        <p class="text-3xl font-display font-bold text-white group-hover:scale-110 transition-transform origin-left">5</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center text-yellow-400">
+                        <i class="fas fa-clipboard-list text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-panel p-6 rounded-2xl hover:bg-white/5 transition-all group">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-xs uppercase tracking-wider font-semibold mb-1">Risco Alto</p>
+                        <p class="text-3xl font-display font-bold text-white group-hover:scale-110 transition-transform origin-left">2</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400">
+                        <i class="fas fa-exclamation-triangle text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scheduled Sessions -->
+        <div class="mb-8">
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group">
+                <!-- Gradient Accent -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-purple-600/20 blur-[100px] pointer-events-none group-hover:bg-purple-600/30 transition-all duration-700"></div>
+
+                <div class="flex flex-col md:flex-row items-center justify-between mb-6 relative z-10 gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25">
+                            <i class="fas fa-calendar-alt text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-display text-2xl font-bold text-white">Sessões Agendadas</h3>
+                            <p class="text-gray-400 text-sm">Próximas consultas e terapias energéticas</p>
+                        </div>
+                    </div>
+                    <button onclick="loadScheduledSessions()" class="glass-button px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/10 transition-colors flex items-center gap-2">
+                        <i class="fas fa-sync-alt text-xs"></i>
+                        Atualizar
+                    </button>
+                </div>
+                <div id="scheduled-sessions" class="space-y-4 relative z-10">
+                    <p class="text-center text-gray-500 py-8">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>Carregando sessões...
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column - Patients List -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Search and Filter -->
+                <div class="glass-panel rounded-3xl p-6 md:p-8">
+                    <h2 class="font-display text-xl font-bold mb-6">Meus Pacientes</h2>
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <div class="relative flex-1">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                            <input type="text" id="patient-search" placeholder="Buscar por nome, email ou diagnóstico..." 
+                                   class="glass-input w-full pl-11 pr-4 py-3 rounded-xl text-sm placeholder-gray-500 text-gray-200 focus:bg-white/10">
+                        </div>
+                        <div class="relative w-full md:w-64">
+                            <select id="patient-filter" class="glass-input w-full px-4 py-3 rounded-xl text-sm text-gray-400 focus:text-white bg-[#0a0a0f] appearance-none cursor-pointer">
+                                <option value="">Todos os riscos</option>
+                                <option value="Alto">Alto Risco</option>
+                                <option value="Moderado">Médio Risco</option>
+                                <option value="Baixo">Baixo Risco</option>
+                            </select>
+                            <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Patients List -->
+                    <div id="patients-list" class="space-y-3">
+                        <p class="text-center text-gray-500 py-12">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>Carregando pacientes...
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Patient Record Section (Hidden by default) -->
+                <div id="patient-record-section" class="hidden">
+                    <div class="glass-panel rounded-3xl p-6 md:p-8 border-l-4 border-l-purple-500">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-white/5 pb-6">
+                            <h2 class="font-display text-2xl font-bold">Prontuário Digital</h2>
+                            <div class="flex space-x-3">
+                                <button onclick="printPatientRecord()" class="glass-button px-4 py-2 rounded-lg text-sm hover:text-blue-400 transition-colors">
+                                    <i class="fas fa-print mr-2"></i>Imprimir
+                                </button>
+                                <button onclick="exportPatientRecord()" class="glass-button px-4 py-2 rounded-lg text-sm hover:text-green-400 transition-colors">
+                                    <i class="fas fa-file-export mr-2"></i>Exportar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Patient Info -->
+                        <div id="patient-info" class="mb-8 bg-white/5 rounded-2xl p-6">
+                            <!-- Info loaded via JS -->
+                        </div>
+                        
+                        <!-- Clinical Assessment -->
+                        <div id="clinical-assessment" class="mb-8 space-y-6">
+                            <!-- Assessment loaded via JS -->
+                        </div>
+                        
+                        <!-- Sessions History -->
+                        <div class="mb-8">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-display text-lg font-bold">Histórico de Atendimentos</h3>
+                            </div>
+                            
+                            <!-- Sessions List -->
+                            <div id="sessions-list" class="space-y-4">
+                                <!-- History loaded via JS -->
+                            </div>
+                        </div>
+                        
+                        <!-- Evaluation Form -->
+                        <div class="glass-panel bg-purple-500/5 border border-purple-500/20 rounded-2xl p-6">
+                            <h3 class="font-display text-lg font-bold mb-4 text-purple-300">Nova Avaliação</h3>
+                            <form id="evaluation-form" class="space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Data</label>
+                                        <input type="date" id="eval-date" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Próxima Sessão</label>
+                                        <input type="date" id="eval-next-session" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm">
+                                    </div>
+                                </div>
+                                 
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Observações Energéticas</label>
+                                    <textarea id="eval-notes" rows="4" class="glass-input w-full px-4 py-3 rounded-xl text-sm" 
+                                              placeholder="Descreva o estado do campo áurico, chakras..." required></textarea>
+                                </div>
+                                 
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Evolução</label>
+                                        <select id="eval-evolution" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm bg-[#0a0a0f]" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="Retrocesso Energético">Retrocesso Energético</option>
+                                            <option value="Estável">Estável</option>
+                                            <option value="Melhora Leve">Melhora Leve</option>
+                                            <option value="Melhora Significativa">Melhora Significativa</option>
+                                            <option value="Alinhamento Completo">Alinhamento Completo</option>
+                                            <option value="Ascensão Energética">Ascensão Energética</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Recomendações</label>
+                                        <textarea id="eval-recommendations" rows="1" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" 
+                                                  placeholder="Recomendações..." required></textarea>
+                                    </div>
+                                </div>
+                                 
+                                <div class="flex justify-end gap-3 pt-2">
+                                    <button type="button" onclick="resetEvaluationForm()" class="glass-button px-5 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white">
+                                        Limpar
+                                    </button>
+                                    <button type="submit" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-medium px-6 py-2.5 rounded-xl text-sm shadow-lg shadow-purple-500/25 transition-all transform hover:-translate-y-0.5">
+                                        Salvar Avaliação
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column -->
+            <div class="space-y-8">
+                <!-- High Risk Patients -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <h3 class="font-display text-lg font-bold mb-4 text-red-400 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                        Atenção Prioritária
+                    </h3>
+                    <div id="high-risk-patients" class="space-y-3">
+                        <p class="text-sm text-gray-500">Carregando...</p>
+                    </div>
+                </div>
+                
+                <!-- Pending Evaluations -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <h3 class="font-display text-lg font-bold mb-4 text-yellow-400 flex items-center gap-2">
+                         <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                         Avaliações Pendentes
+                    </h3>
+                    <div id="pending-evaluations" class="space-y-3">
+                        <p class="text-sm text-gray-500">Carregando...</p>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <h3 class="font-display text-lg font-bold mb-4">Ações Rápidas</h3>
+                    <div class="space-y-3">
+                        <button onclick="showNewPatientModal()" class="w-full glass-button p-4 rounded-xl flex items-center justify-between group hover:border-purple-500/30 text-left">
+                            <span class="text-sm font-medium"><i class="fas fa-user-plus text-purple-400 mr-2"></i>Novo Paciente</span>
+                            <i class="fas fa-chevron-right text-xs text-gray-600 group-hover:text-purple-400 transition-colors"></i>
+                        </button>
+                        <button onclick="showScheduleModal()" class="w-full glass-button p-4 rounded-xl flex items-center justify-between group hover:border-blue-500/30 text-left">
+                            <span class="text-sm font-medium"><i class="fas fa-calendar-plus text-blue-400 mr-2"></i>Agendar Sessão</span>
+                            <i class="fas fa-chevron-right text-xs text-gray-600 group-hover:text-blue-400 transition-colors"></i>
+                        </button>
+                        <button onclick="exportAllRecords()" class="w-full glass-button p-4 rounded-xl flex items-center justify-between group hover:border-green-500/30 text-left">
+                            <span class="text-sm font-medium"><i class="fas fa-download text-green-400 mr-2"></i>Exportar Relatórios</span>
+                            <i class="fas fa-chevron-right text-xs text-gray-600 group-hover:text-green-400 transition-colors"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Recent Activities -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <h3 class="font-display text-lg font-bold mb-4">Atividades Recentes</h3>
+                    <div id="recent-activities" class="space-y-4">
+                        <p class="text-sm text-gray-500">Carregando...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals Container -->
+    <div id="modal-container"></div>
+
+    <!-- Scripts -->
+    <!-- Essential logic -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/components.js"></script>
+    <!-- Visual -->
+    <script src="assets/js/esoteric-animation.js"></script>
+    <script src="js/theme.js"></script>
+    <!-- App Logic -->
+    <script src="js/admin-clinical.js"></script>
+    
+    <!-- Modal System Integration (Preserved) -->
+    <script>
+        window.showBerhuModal = function(type, customContent = null) {
+            // Remove existing
+            const existing = document.querySelector('.berhu-modal-overlay');
+            if (existing) existing.remove();
+            
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'berhu-modal-overlay animate-fade-in';
+            
+            let content = '';
+            let title = '';
+            let modalClass = 'berhu-modal';
+            
+            switch(type) {
+                case 'schedule':
+                    title = 'Agendar Sessão';
+                    modalClass = 'berhu-modal max-w-2xl';
+                    content = `
+                        <div class="berhu-modal-body">
+                            <form id="schedule-form" class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Paciente</label>
+                                        <select id="schedule-patient" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm bg-[#0a0a0f]" required>
+                                            <option value="">Selecione...</option>
+                                            ${window.patientsData ? window.patientsData.map(p => `<option value="${p.id}">${p.name}</option>`).join('') : '<option>Carregando...</option>'}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Tipo</label>
+                                        <select id="schedule-type" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm bg-[#0a0a0f]" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="Limpeza Áurica">Limpeza Áurica</option>
+                                            <option value="Reiki">Reiki</option>
+                                            <option value="Meditação Chakras">Meditação Chakras</option>
+                                            <option value="Meditação Mindfulness">Meditação Mindfulness</option>
+                                            <option value="Meditação Curativa">Meditação Curativa</option>
+                                            <option value="Leitura de Aura">Leitura de Aura</option>
+                                            <option value="Cristais">Cristais</option>
+                                            <option value="Astrologia Terapêutica">Astrologia Terapêutica</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Data</label>
+                                        <input type="date" id="schedule-date" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Horário</label>
+                                        <input type="time" id="schedule-time" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" required>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Duração (min)</label>
+                                    <input type="number" id="schedule-duration" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" value="60" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="berhu-modal-footer">
+                            <button type="button" onclick="this.closest('.berhu-modal-overlay').remove()" class="glass-button px-4 py-2 rounded-lg text-sm text-gray-400">Cancelar</button>
+                            <button type="button" onclick="saveSchedule()" class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg shadow-purple-600/20">Confirmar Agendamento</button>
+                        </div>
+                    `;
+                    break;
+                    
+                // ... (Keeping simplified logic for other types, mapping old structure to new styles) ...
+                case 'patient':
+                    title = 'Novo Paciente';
+                    modalClass = 'berhu-modal max-w-3xl';
+                    content = `
+                        <div class="berhu-modal-body">
+                             <form id="new-patient-form" class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Nome</label>
+                                        <input type="text" id="new-patient-name" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase">Email</label>
+                                        <input type="email" id="new-patient-email" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm" required>
+                                    </div>
+                                    <!-- Simplified form fields mirroring original structure but with glass-input class -->
+                                </div>
+                                <div class="p-4 bg-purple-500/10 rounded-xl text-purple-200 text-sm">
+                                    <i class="fas fa-info-circle mr-2"></i> Preencha os dados completos para iniciar o prontuário.
+                                </div>
+                            </form>
+                        </div>
+                         <div class="berhu-modal-footer">
+                            <button type="button" onclick="this.closest('.berhu-modal-overlay').remove()" class="glass-button px-4 py-2 rounded-lg text-sm text-gray-400">Cancelar</button>
+                            <button type="button" onclick="saveNewPatient()" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg shadow-green-600/20">Salvar Paciente</button>
+                        </div>
+                    `;
+                    break;
+
+                case 'reports':
+                    title = 'Relatórios do Sistema';
+                    modalClass = 'berhu-modal max-w-5xl';
+                    content = `
+                        <div class="berhu-modal-body">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="bg-white/5 rounded-2xl p-6">
+                                    <h4 class="font-bold text-lg mb-4 text-purple-400">Estatísticas Gerais</h4>
+                                    <!-- Placeholder content -->
+                                    <div class="space-y-2 text-sm text-gray-300">
+                                        <p>Total de Pacientes: ${window.patientsData ? window.patientsData.length : 0}</p>
+                                        <p>Sessões Realizadas: 156</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="berhu-modal-footer">
+                            <button type="button" onclick="this.closest('.berhu-modal-overlay').remove()" class="glass-button px-4 py-2 rounded-lg text-sm">Fechar</button>
+                        </div>
+                    `;
+                    break;
+                    
+                 case 'custom':
+                    title = customContent.title || 'Informação';
+                    content = `<div class="berhu-modal-body">${customContent.content || ''}</div>`;
+                    break;
+            }
+            
+            overlay.innerHTML = `
+                <div class="${modalClass}">
+                    <div class="berhu-modal-header">
+                        <h3 class="berhu-modal-title">${title}</h3>
+                        <button class="berhu-modal-close" onclick="this.closest('.berhu-modal-overlay').remove()">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    ${content}
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+        };
+        
+        // Aliases for compatibility
+        window.showScheduleModal = () => showBerhuModal('schedule');
+        window.showNewPatientModal = () => showBerhuModal('patient');
+        window.showReportsModal = () => showBerhuModal('reports');
+        window.showModal = (title, content) => showBerhuModal('custom', { title, content });
+    </script>
+
+</body>
+</html>

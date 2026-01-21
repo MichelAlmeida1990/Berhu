@@ -1,0 +1,290 @@
+/* Orbital Menu Original Style - Adaptado para Berhu */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+:root {
+  --orbital-size: 10rem;
+  --orbital-center: 18rem;
+}
+
+html{  
+  font-size: 62.5%;
+}
+
+html,body{
+  height: 100%;
+}
+
+body{
+  font-size: 16px;
+  display: flex;
+  align-items:center;
+  justify-content:center;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #1e3a5f 0%, #667eea 50%, #764ba2 100%);
+  overflow: hidden;
+}
+
+@keyframes appear {
+  0% {
+    top: 0;
+    transform-origin: var(--orbital-size) 0;
+  }
+  100% {
+    top: -25rem;
+    transform-origin: var(--orbital-size) 25rem;
+  }
+}
+
+@keyframes menu-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes scaling {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.orbital-menu{
+    position: relative;
+}
+
+.orbital-menu__list{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    animation: menu-rotation linear 60s infinite;
+    &:hover{
+      animation-play-state: paused;      
+      .orbital-menu__link{
+        > * {
+      animation-play-state: paused;  
+        }
+      }
+    }
+}
+
+.orbital-menu__item{
+    position: absolute;
+    animation: appear 2s forwards;
+    left: calc(var(--orbital-size) * -1);
+    top: 0;
+    transform-origin: var(--orbital-size) 0;
+}
+
+.orbital-menu__item:nth-child(2){
+    animation-delay: 0.1s;
+    transform:rotate(45deg);
+    .orbital-menu__link{
+        transform:rotate(-45deg);
+      &:before{
+        background:hsl(45deg 100% 65%);
+        animation-delay:0.33s;
+      }
+    }
+}
+
+.orbital-menu__item:nth-child(3){
+    animation-delay: 0.2s;
+    transform:rotate(90deg);
+    .orbital-menu__link{
+        transform:rotate(-90deg);
+      &:before{
+        background:hsl(90deg 100% 65%);
+        animation-delay:0.66s;
+      }
+    }
+}
+
+.orbital-menu__item:nth-child(4){
+    animation-delay: 0.3s;
+    transform:rotate(135deg);
+    .orbital-menu__link{
+        transform:rotate(-135deg);
+      &:before{
+        background:hsl(135deg 100% 65%);
+        animation-delay:0.99s;
+      }
+    }
+}
+
+.orbital-menu__item:nth-child(5){
+    animation-delay: 0.4s;
+    transform:rotate(180deg);
+    .orbital-menu__link{
+        transform:rotate(-180deg);
+      &:before{
+        background:hsl(180deg 100% 65%);
+        animation-delay:1.32s;
+      }
+    }
+}
+
+.orbital-menu__item:nth-child(6){
+    animation-delay: 0.5s;
+    transform:rotate(225deg);
+    .orbital-menu__link{
+        transform:rotate(-225deg);
+      &:before{
+        background:hsl(225deg 100% 65%);
+        animation-delay:1.65s;
+      }
+    }
+}
+
+.orbital-menu__item:nth-child(7){
+    animation-delay: 0.6s;
+    transform:rotate(270deg);
+    .orbital-menu__link{
+        transform:rotate(-270deg);
+      &:before{
+        background:hsl(270deg 100% 65%);
+        animation-delay:1.98s;
+      }
+    }
+}
+
+.orbital-menu__item:nth-child(8){
+    animation-delay: 0.7s;
+    transform:rotate(315deg);
+    .orbital-menu__link{
+        transform:rotate(-315deg);
+      &:before{
+        background:hsl(315deg 100% 65%);
+        animation-delay:2.31s;
+      }
+    }
+}
+
+.orbital-menu__link{
+    position: relative;
+    display:block;
+    height: var(--orbital-size);
+    width: var(--orbital-size);
+    &:before{
+      content:'';
+      position: absolute;
+      inset: 0;
+      background:hsl(0 100% 65%);
+      border-radius: 50%;
+      animation: scaling linear 3s infinite;
+    }    
+    > *{
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items:center;
+      justify-content:center;
+      animation: menu-rotation linear 60s infinite;
+      animation-direction: reverse;
+      transition: 250ms ease all;
+    }
+    &-text{
+      opacity: 0;
+      text-align: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    &-icon{
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 2rem;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+    &:hover{
+      &:before{
+        animation-play-state: paused;        
+        filter: brightness(1.2);
+        transform: scale(1.1);
+      }
+      .orbital-menu__link-text{
+        opacity: 1;
+      }
+      .orbital-menu__link-icon{
+        opacity: 0;
+      }
+    }
+}
+
+.orbital-menu__center-pic{
+    position: relative;
+    width: var(--orbital-center);
+    height: var(--orbital-center);
+    overflow: hidden;
+    border-radius: 4rem;
+    border: 3px solid #d4af37;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+    > img{
+      position: absolute;
+      inset: 0;
+      max-width: 100%;
+      transition: 500ms ease all;
+      object-fit: cover;
+    }
+    &:hover{
+      > img:last-child{
+        opacity: 0;
+      }
+    }
+}
+
+/* Berhu-specific adaptations */
+.orbital-menu__item:nth-child(1) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.orbital-menu__item:nth-child(2) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #f8b5d4, #a7f3d0);
+}
+
+.orbital-menu__item:nth-child(3) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #4f46e5, #9333ea);
+}
+
+.orbital-menu__item:nth-child(4) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+}
+
+.orbital-menu__item:nth-child(5) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #ea580c, #fbbf24);
+}
+
+.orbital-menu__item:nth-child(6) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #10b981, #84cc16);
+}
+
+.orbital-menu__item:nth-child(7) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #f43f5e, #dc2626);
+}
+
+.orbital-menu__item:nth-child(8) .orbital-menu__link::before {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --orbital-size: 6rem;
+    --orbital-center: 12rem;
+  }
+  
+  .orbital-menu__link-text {
+    font-size: 0.9rem;
+  }
+  
+  .orbital-menu__link-icon {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berhu - Logos e Identidade Visual</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+    <link href="assets/css/components.css" rel="stylesheet">
+    <link href="assets/css/responsive.css" rel="stylesheet">
+    <style>
+        .logo-showcase {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: gradient-shift 8s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+            25% { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); }
+            50% { background: linear-gradient(135deg, #667eea 0%, #f093fb 100%); }
+            75% { background: linear-gradient(135deg, #f093fb 0%, #667eea 100%); }
+        }
+        
+        .logo-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .logo-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .animated-logo {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .glow-effect {
+            filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
+        }
+        
+        .rotating {
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5)); }
+            50% { filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.8)); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen text-white">
+    
+    <!-- Header -->
+    <header class="bg-black bg-opacity-30 backdrop-blur-md border-b border-white border-opacity-20">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">B</span>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Berhu</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="hover:text-purple-300 transition">Início</a>
+                    <a href="profile.html" class="hover:text-purple-300 transition">Perfil</a>
+                    <a href="courses.html" class="hover:text-purple-300 transition">Cursos</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition">
+                        <i class="fas fa-home mr-2"></i>Início
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+                Identidade Visual Berhu
+            </h1>
+            <p class="text-gray-300 text-lg max-w-3xl mx-auto">
+                Conheça os conceitos de logos e a identidade visual desenvolvida para a marca Berhu, 
+                representando bem-estar espiritual e transformação consciencial.
+            </p>
+        </div>
+
+        <!-- Logo Concepts -->
+        <div class="grid md:grid-cols-2 gap-8 mb-16">
+            
+            <!-- Concept 1: Sacred Geometry -->
+            <div class="logo-card bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 border border-white border-opacity-20">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold mb-2">Conceito 1: Geometria Sagrada</h2>
+                    <p class="text-gray-400">Símbolos sagrados e proporções divinas</p>
+                </div>
+                
+                <div class="flex justify-center mb-6">
+                    <div class="animated-logo">
+                        <svg width="200" height="200" viewBox="0 0 200 200" class="glow-effect">
+                            <!-- Flower of Life Pattern -->
+                            <defs>
+                                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            
+                            <!-- Central Circle -->
+                            <circle cx="100" cy="100" r="30" fill="none" stroke="url(#grad1)" stroke-width="3"/>
+                            
+                            <!-- Surrounding Circles -->
+                            <circle cx="100" cy="70" r="30" fill="none" stroke="url(#grad1)" stroke-width="3"/>
+                            <circle cx="130" cy="85" r="30" fill="none" stroke="url(#grad1)" stroke-width="3"/>
+                            <circle cx="130" cy="115" r="30" fill="none" stroke="url(#grad1)" stroke-width="3"/>
+                            <circle cx="100" cy="130" r="30" fill="none" stroke="url(#grad1)" stroke-width="3"/>
+                            <circle cx="70" cy="115" r="30" fill="none" stroke="url(#grad1)" stroke-width="3"/>
+                            <circle cx="70" cy="85" r="30" fill="none" stroke="url(#grad1)" stroke-width="3"/>
+                            
+                            <!-- Letter B -->
+                            <text x="100" y="110" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+                                  text-anchor="middle" fill="url(#grad1)">B</text>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-purple-400 text-xs"></i>
+                        <span class="text-sm">Baseado na Flor da Vida</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-purple-400 text-xs"></i>
+                        <span class="text-sm">Proporções áureas e harmonia</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-purple-400 text-xs"></i>
+                        <span class="text-sm">Conexão universal e espiritual</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-purple-400 text-xs"></i>
+                        <span class="text-sm">Cores: Roxo e violeta (transcendência)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Concept 2: Energy Flow -->
+            <div class="logo-card bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 border border-white border-opacity-20">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold mb-2">Conceito 2: Fluxo Energético</h2>
+                    <p class="text-gray-400">Movimento e transformação de energia</p>
+                </div>
+                
+                <div class="flex justify-center mb-6">
+                    <div class="rotating">
+                        <svg width="200" height="200" viewBox="0 0 200 200" class="glow-effect">
+                            <defs>
+                                <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            
+                            <!-- Energy Spirals -->
+                            <path d="M 100 50 Q 150 100 100 150 Q 50 100 100 50" 
+                                  fill="none" stroke="url(#grad2)" stroke-width="4" opacity="0.8"/>
+                            <path d="M 100 60 Q 140 100 100 140 Q 60 100 100 60" 
+                                  fill="none" stroke="url(#grad2)" stroke-width="3" opacity="0.6"/>
+                            <path d="M 100 70 Q 130 100 100 130 Q 70 100 100 70" 
+                                  fill="none" stroke="url(#grad2)" stroke-width="2" opacity="0.4"/>
+                            
+                            <!-- Central Energy Point -->
+                            <circle cx="100" cy="100" r="8" fill="url(#grad2)" class="pulse-glow"/>
+                            
+                            <!-- Letter B -->
+                            <text x="100" y="110" font-family="Arial, sans-serif" font-size="36" font-weight="300" 
+                                  text-anchor="middle" fill="white" opacity="0.9">B</text>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-pink-400 text-xs"></i>
+                        <span class="text-sm">Espirais de energia cósmica</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-pink-400 text-xs"></i>
+                        <span class="text-sm">Movimento contínuo e transformação</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-pink-400 text-xs"></i>
+                        <span class="text-sm">Dinamismo e vitalidade</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-pink-400 text-xs"></i>
+                        <span class="text-sm">Cores: Rosa e laranja (energia vital)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Concept 3: Celestial Alignment -->
+            <div class="logo-card bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 border border-white border-opacity-20">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold mb-2">Conceito 3: Alinhamento Celestial</h2>
+                    <p class="text-gray-400">Conexão com o cosmos e astros</p>
+                </div>
+                
+                <div class="flex justify-center mb-6">
+                    <div class="animated-logo">
+                        <svg width="200" height="200" viewBox="0 0 200 200" class="glow-effect">
+                            <defs>
+                                <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+                                </linearGradient>
+                                <radialGradient id="starGrad">
+                                    <stop offset="0%" style="stop-color:#fff;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#4facfe;stop-opacity:0.8" />
+                                </radialGradient>
+                            </defs>
+                            
+                            <!-- Orbital Rings -->
+                            <ellipse cx="100" cy="100" rx="80" ry="30" fill="none" stroke="url(#grad3)" stroke-width="2" opacity="0.6"/>
+                            <ellipse cx="100" cy="100" rx="60" ry="40" fill="none" stroke="url(#grad3)" stroke-width="2" opacity="0.7"/>
+                            <ellipse cx="100" cy="100" rx="40" ry="50" fill="none" stroke="url(#grad3)" stroke-width="2" opacity="0.8"/>
+                            
+                            <!-- Stars -->
+                            <circle cx="100" cy="60" r="4" fill="url(#starGrad)"/>
+                            <circle cx="140" cy="100" r="3" fill="url(#starGrad)"/>
+                            <circle cx="100" cy="140" r="4" fill="url(#starGrad)"/>
+                            <circle cx="60" cy="100" r="3" fill="url(#starGrad)"/>
+                            <circle cx="125" cy="75" r="2" fill="url(#starGrad)"/>
+                            <circle cx="125" cy="125" r="2" fill="url(#starGrad)"/>
+                            <circle cx="75" cy="125" r="2" fill="url(#starGrad)"/>
+                            <circle cx="75" cy="75" r="2" fill="url(#starGrad)"/>
+                            
+                            <!-- Central Sun -->
+                            <circle cx="100" cy="100" r="12" fill="url(#grad3)" class="pulse-glow"/>
+                            
+                            <!-- Letter B -->
+                            <text x="100" y="108" font-family="Arial, sans-serif" font-size="42" font-weight="bold" 
+                                  text-anchor="middle" fill="white">B</text>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-blue-400 text-xs"></i>
+                        <span class="text-sm">Órbitas planetárias e estrelas</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-blue-400 text-xs"></i>
+                        <span class="text-sm">Alinhamento cósmico e propósito</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-blue-400 text-xs"></i>
+                        <span class="text-sm">Conexão universal e destino</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-blue-400 text-xs"></i>
+                        <span class="text-sm">Cores: Azul celeste e ciano (cosmos)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Concept 4: Sacred Lotus -->
+            <div class="logo-card bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 border border-white border-opacity-20">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold mb-2">Conceito 4: Lótus Sagrado</h2>
+                    <p class="text-gray-400">Renascimento e iluminação espiritual</p>
+                </div>
+                
+                <div class="flex justify-center mb-6">
+                    <div class="animated-logo">
+                        <svg width="200" height="200" viewBox="0 0 200 200" class="glow-effect">
+                            <defs>
+                                <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#fa709a;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#fee140;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            
+                            <!-- Lotus Petals -->
+                            <g transform="translate(100, 100)">
+                                <!-- Outer petals -->
+                                <ellipse cx="0" cy="-40" rx="15" ry="35" fill="url(#grad4)" opacity="0.8" transform="rotate(0)"/>
+                                <ellipse cx="0" cy="-40" rx="15" ry="35" fill="url(#grad4)" opacity="0.8" transform="rotate(45)"/>
+                                <ellipse cx="0" cy="-40" rx="15" ry="35" fill="url(#grad4)" opacity="0.8" transform="rotate(90)"/>
+                                <ellipse cx="0" cy="-40" rx="15" ry="35" fill="url(#grad4)" opacity="0.8" transform="rotate(135)"/>
+                                <ellipse cx="0" cy="-40" rx="15" ry="35" fill="url(#grad4)" opacity="0.8" transform="rotate(180)"/>
+                                <ellipse cx="0" cy="-40" rx="15" ry="35" fill="url(#grad4)" opacity="0.8" transform="rotate(225)"/>
+                                <ellipse cx="0" cy="-40" rx="15" ry="35" fill="url(#grad4)" opacity="0.8" transform="rotate(270)"/>
+                                <ellipse cx="0" cy="-40" rx="15" ry="35" fill="url(#grad4)" opacity="0.8" transform="rotate(315)"/>
+                                
+                                <!-- Inner petals -->
+                                <ellipse cx="0" cy="-25" rx="10" ry="20" fill="url(#grad4)" opacity="0.9" transform="rotate(22.5)"/>
+                                <ellipse cx="0" cy="-25" rx="10" ry="20" fill="url(#grad4)" opacity="0.9" transform="rotate(67.5)"/>
+                                <ellipse cx="0" cy="-25" rx="10" ry="20" fill="url(#grad4)" opacity="0.9" transform="rotate(112.5)"/>
+                                <ellipse cx="0" cy="-25" rx="10" ry="20" fill="url(#grad4)" opacity="0.9" transform="rotate(157.5)"/>
+                                <ellipse cx="0" cy="-25" rx="10" ry="20" fill="url(#grad4)" opacity="0.9" transform="rotate(202.5)"/>
+                                <ellipse cx="0" cy="-25" rx="10" ry="20" fill="url(#grad4)" opacity="0.9" transform="rotate(247.5)"/>
+                                <ellipse cx="0" cy="-25" rx="10" ry="20" fill="url(#grad4)" opacity="0.9" transform="rotate(292.5)"/>
+                                <ellipse cx="0" cy="-25" rx="10" ry="20" fill="url(#grad4)" opacity="0.9" transform="rotate(337.5)"/>
+                                
+                                <!-- Center -->
+                                <circle cx="0" cy="0" r="12" fill="url(#grad4)" class="pulse-glow"/>
+                            </g>
+                            
+                            <!-- Letter B -->
+                            <text x="100" y="110" font-family="Arial, sans-serif" font-size="38" font-weight="bold" 
+                                  text-anchor="middle" fill="white">B</text>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-yellow-400 text-xs"></i>
+                        <span class="text-sm">Pétalas de lótus em expansão</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-yellow-400 text-xs"></i>
+                        <span class="text-sm">Renascimento e pureza espiritual</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-yellow-400 text-xs"></i>
+                        <span class="text-sm">Crescimento e iluminação</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-circle text-yellow-400 text-xs"></i>
+                        <span class="text-sm">Cores: Dourado e rosa (iluminação)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Brand Guidelines -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 border border-white border-opacity-20 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">Diretrizes da Marca</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Colors -->
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-4">Cores da Marca</h3>
+                    <div class="space-y-3">
+                        <div class="bg-purple-600 h-20 rounded-lg flex items-center justify-center">
+                            <span class="text-sm font-mono">#667eea</span>
+                        </div>
+                        <div class="bg-pink-600 h-20 rounded-lg flex items-center justify-center">
+                            <span class="text-sm font-mono">#764ba2</span>
+                        </div>
+                        <div class="bg-blue-500 h-20 rounded-lg flex items-center justify-center">
+                            <span class="text-sm font-mono">#4facfe</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Typography -->
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-4">Tipografia</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-3xl font-bold">Berhu</p>
+                            <p class="text-sm text-gray-400">Titular - Bold</p>
+                        </div>
+                        <div>
+                            <p class="text-lg">Transformação Espiritual</p>
+                            <p class="text-sm text-gray-400">Subtítulo - Regular</p>
+                        </div>
+                        <div>
+                            <p class="text-sm">Bem-estar e desenvolvimento consciencial</p>
+                            <p class="text-sm text-gray-400">Corpo - Light</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Values -->
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-4">Valores da Marca</h3>
+                    <div class="space-y-3 text-left">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-heart text-purple-400"></i>
+                            <span class="text-sm">Compaixão</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-lightbulb text-purple-400"></i>
+                            <span class="text-sm">Sabedoria</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-leaf text-purple-400"></i>
+                            <span class="text-sm">Crescimento</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-infinity text-purple-400"></i>
+                            <span class="text-sm">Transformação</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Voice -->
+                <div class="text-center">
+                    <h3 class="text-xl font-semibold mb-4">Voz da Marca</h3>
+                    <div class="space-y-3 text-left">
+                        <div>
+                            <p class="font-semibold text-purple-300">Acolhedor</p>
+                            <p class="text-sm text-gray-400">Transmite segurança e confiança</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-purple-300">Inspirador</p>
+                            <p class="text-sm text-gray-400">Motiva e eleva o espírito</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-purple-300">Autêntico</p>
+                            <p class="text-sm text-gray-400">Genuíno e transparente</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 border border-white border-opacity-20">
+            <h2 class="text-3xl font-bold text-center mb-8">Aplicações da Marca</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="bg-white bg-opacity-10 rounded-lg p-6 mb-4">
+                        <i class="fas fa-mobile-alt text-4xl text-purple-400 mb-4"></i>
+                        <h3 class="font-semibold mb-2">Digital</h3>
+                        <p class="text-sm text-gray-400">Website, aplicativos, redes sociais</p>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-white bg-opacity-10 rounded-lg p-6 mb-4">
+                        <i class="fas fa-print text-4xl text-purple-400 mb-4"></i>
+                        <h3 class="font-semibold mb-2">Impressos</h3>
+                        <p class="text-sm text-gray-400">Cartões, flyers, materiais impressos</p>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-white bg-opacity-10 rounded-lg p-6 mb-4">
+                        <i class="fas fa-tshirt text-4xl text-purple-400 mb-4"></i>
+                        <h3 class="font-semibold mb-2">Produtos</h3>
+                        <p class="text-sm text-gray-400">Roupas, acessórios, merchandising</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black bg-opacity-30 backdrop-blur-md border-t border-white border-opacity-20 mt-12">
+        <div class="container mx-auto px-6 py-8">
+            <div class="text-center">
+                <p class="text-gray-300">&copy; 2024 Berhu. Todos os direitos reservados.</p>
+                <p class="text-sm text-gray-400 mt-2">Identidade visual desenvolvida com amor e propósito</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/components.js"></script>
+</body>
+</html>

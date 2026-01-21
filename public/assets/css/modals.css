@@ -1,0 +1,326 @@
+/* ========================================
+   MODAL SYSTEM - BERHU PLATFORM
+   Versão 2.0 - Refeito do Zero
+   ======================================== */
+
+/* Base Modal Container */
+.berhu-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    padding: 1rem;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.berhu-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Content Container */
+.berhu-modal {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.95) 0%, rgba(236, 72, 153, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+    padding: 0;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.berhu-modal-overlay.active .berhu-modal {
+    transform: scale(1) translateY(0);
+}
+
+/* Modal Header */
+.berhu-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2rem 1rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.berhu-modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+}
+
+.berhu-modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.berhu-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* Modal Body */
+.berhu-modal-body {
+    padding: 1rem 2rem 2rem 2rem;
+    max-height: calc(90vh - 140px);
+    overflow-y: auto;
+}
+
+/* Modal Footer */
+.berhu-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1rem 2rem 2rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Form Elements */
+.berhu-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.berhu-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+}
+
+.berhu-form-input,
+.berhu-form-select,
+.berhu-form-textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    color: white;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.berhu-form-input::placeholder,
+.berhu-form-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.berhu-form-input:focus,
+.berhu-form-select:focus,
+.berhu-form-textarea:focus {
+    outline: none;
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.berhu-form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Buttons */
+.berhu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    text-decoration: none;
+    gap: 0.5rem;
+}
+
+.berhu-btn-primary {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    color: white;
+}
+
+.berhu-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.3);
+}
+
+.berhu-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.berhu-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Grid System */
+.berhu-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.berhu-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.berhu-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.berhu-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .berhu-modal-overlay {
+        padding: 0.5rem;
+    }
+    
+    .berhu-modal {
+        max-width: 100%;
+        max-height: 95vh;
+        border-radius: 0.5rem;
+    }
+    
+    .berhu-modal-header {
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+    }
+    
+    .berhu-modal-title {
+        font-size: 1.25rem;
+    }
+    
+    .berhu-modal-body {
+        padding: 1rem 1.5rem 1.5rem 1.5rem;
+        max-height: calc(95vh - 120px);
+    }
+    
+    .berhu-modal-footer {
+        padding: 1rem 1.5rem 1.5rem 1.5rem;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .berhu-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .berhu-grid-2,
+    .berhu-grid-3,
+    .berhu-grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .berhu-modal-overlay {
+        padding: 0.25rem;
+    }
+    
+    .berhu-modal-header {
+        padding: 1rem;
+    }
+    
+    .berhu-modal-body {
+        padding: 1rem;
+    }
+    
+    .berhu-modal-footer {
+        padding: 1rem;
+    }
+}
+
+/* Animation Classes */
+.berhu-fade-in {
+    animation: berhuFadeIn 0.3s ease-out;
+}
+
+.berhu-slide-up {
+    animation: berhuSlideUp 0.3s ease-out;
+}
+
+@keyframes berhuFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes berhuSlideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Utility Classes */
+.berhu-text-center {
+    text-align: center;
+}
+
+.berhu-mb-4 {
+    margin-bottom: 1rem;
+}
+
+.berhu-mt-4 {
+    margin-top: 1rem;
+}
+
+.berhu-hidden {
+    display: none;
+}
+
+/* Scrollbar Styling */
+.berhu-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.berhu-modal-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.berhu-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.5);
+    border-radius: 3px;
+}
+
+.berhu-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.7);
+}

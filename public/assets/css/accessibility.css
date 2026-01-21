@@ -1,0 +1,523 @@
+/* Accessibility and Responsivity Improvements for Berhu Platform */
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Focus styles for better keyboard navigation */
+:focus-visible {
+    outline: 2px solid #8B5CF6;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Skip to main content link */
+.skip-to-main {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #8B5CF6;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+    transition: top 0.3s;
+}
+
+.skip-to-main:focus {
+    top: 6px;
+}
+
+/* Screen reader only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .bg-white {
+        background-color: #000 !important;
+    }
+    
+    .text-gray-600 {
+        color: #fff !important;
+    }
+    
+    .border-gray-300 {
+        border-color: #fff !important;
+    }
+}
+
+/* Improved color contrast */
+.text-gray-400 {
+    color: #9CA3AF; /* Increased contrast */
+}
+
+.text-gray-500 {
+    color: #6B7280; /* Increased contrast */
+}
+
+/* Better form controls */
+input, textarea, select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    touch-action: manipulation; /* Improves touch responsiveness */
+}
+
+/* Touch targets for mobile */
+@media (max-width: 768px) {
+    button, a, input, select, textarea {
+        min-height: 44px; /* iOS HIG minimum touch target */
+        min-width: 44px;
+    }
+    
+    .service-option {
+        padding: 12px;
+    }
+    
+    .time-slot {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .calendar-day {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* Improved mobile navigation */
+@media (max-width: 768px) {
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+        transition: left 0.3s ease;
+        z-index: 999;
+        overflow-y: auto;
+    }
+    
+    .mobile-menu.active {
+        left: 0;
+    }
+    
+    .mobile-menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .mobile-menu-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+    html {
+        font-size: 14px;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+        line-height: 1.2;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+        line-height: 1.3;
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+        line-height: 1.4;
+    }
+}
+
+@media (min-width: 1024px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+/* Improved grid layouts */
+@media (max-width: 640px) {
+    .grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .lg\\:grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .lg\\:col-span-2 {
+        grid-column: span 1;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    .grid-cols-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .lg\\:grid-cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .lg\\:col-span-2 {
+        grid-column: span 1;
+    }
+}
+
+/* Responsive spacing */
+@media (max-width: 640px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .p-6 {
+        padding: 1rem;
+    }
+    
+    .mb-8 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .space-y-6 > * + * {
+        margin-top: 1rem;
+    }
+}
+
+/* Improved modal accessibility */
+.modal {
+    padding: 1rem;
+}
+
+@media (max-width: 640px) {
+    .modal-content {
+        margin: 1rem;
+        max-width: none;
+        width: calc(100% - 2rem);
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+}
+
+/* Better table responsiveness */
+@media (max-width: 768px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .responsive-table {
+        display: block;
+    }
+    
+    .responsive-table thead,
+    .responsive-table tbody,
+    .responsive-table th,
+    .responsive-table td,
+    .responsive-table tr {
+        display: block;
+    }
+    
+    .responsive-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .responsive-table tr {
+        border: 1px solid #ccc;
+        margin-bottom: 1rem;
+    }
+    
+    .responsive-table td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        white-space: normal;
+        text-align: left;
+    }
+    
+    .responsive-table td:before {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        content: attr(data-label);
+    }
+}
+
+/* Improved loading states */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .bg-white {
+        background-color: #1F2937 !important;
+    }
+    
+    .text-gray-900 {
+        color: #F9FAFB !important;
+    }
+    
+    .text-gray-600 {
+        color: #D1D5DB !important;
+    }
+    
+    .border-gray-300 {
+        border-color: #4B5563 !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-break {
+        page-break-before: always;
+    }
+    
+    body {
+        font-size: 12pt;
+        line-height: 1.4;
+        color: #000;
+        background: #fff;
+    }
+    
+    a {
+        color: #000;
+        text-decoration: underline;
+    }
+    
+    .modal {
+        position: static;
+        background: #fff;
+    }
+    
+    .modal-content {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}
+
+/* Improved error states */
+.error-message {
+    color: #EF4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.error-message::before {
+    content: '⚠';
+    font-size: 1rem;
+}
+
+.success-message {
+    color: #10B981;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.success-message::before {
+    content: '✓';
+    font-size: 1rem;
+}
+
+/* Improved button states */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+button:disabled:hover {
+    transform: none !important;
+}
+
+/* Better focus management */
+.focus-trap {
+    outline: none;
+}
+
+.focus-trap:focus-visible {
+    outline: 2px solid #8B5CF6;
+    outline-offset: 2px;
+}
+
+/* Improved tooltip accessibility */
+.tooltip {
+    position: relative;
+}
+
+.tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1F2937;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 1000;
+}
+
+.tooltip:focus::before,
+.tooltip:hover::before {
+    opacity: 1;
+}
+
+/* Better carousel accessibility */
+.carousel {
+    position: relative;
+}
+
+.carousel-item {
+    display: none;
+}
+
+.carousel-item.active {
+    display: block;
+}
+
+.carousel-prev,
+.carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.carousel-prev {
+    left: 0.5rem;
+}
+
+.carousel-next {
+    right: 0.5rem;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.carousel-indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+}
+
+.carousel-indicator.active {
+    background: white;
+}
+
+/* Improved form validation styles */
+.form-field-error {
+    border-color: #EF4444 !important;
+    box-shadow: 0 0 0 1px #EF4444 !important;
+}
+
+.form-field-success {
+    border-color: #10B981 !important;
+    box-shadow: 0 0 0 1px #10B981 !important;
+}
+
+.form-field-warning {
+    border-color: #F59E0B !important;
+    box-shadow: 0 0 0 1px #F59E0B !important;
+}
