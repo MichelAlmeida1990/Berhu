@@ -13,6 +13,22 @@ const db = require('./database');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const IS_PROD = process.env.NODE_ENV === 'production';
+const allowedOriginsFromEnv = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+const devOrigins = [
+  'http://localhost:8000', 
+  'http://127.0.0.1:8000', 
+  'http://localhost:3001', 
+  'http://127.0.0.1:3001',
+  /^http:\/\/127\.0\.0\.1:\d+$/,
+  /^http:\/\/localhost:\d+$/
+];
+const allowedOrigins = IS_PROD
+  ? (allowedOriginsFromEnv.length ? allowedOriginsFromEnv : true)
+  : devOrigins;
 
 // Middleware
 app.use(helmet({
@@ -25,16 +41,27 @@ app.use(helmet({
         "'unsafe-inline'",
         "'wasm-unsafe-eval'",
         "https://cdn.jsdelivr.net",
-        "http://localhost:3001",
-        "http://127.0.0.1:3001",
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-        /^http:\/\/127\.0\.0\.1:\d+\/@excalidraw/,
-        /^http:\/\/localhost:\d+\/.*$/,
-        /^http:\/\/127\.0\.0\.1:\d+\/.*$/
+        ...(!IS_PROD ? [
+          "http://localhost:3001",
+          "http://127.0.0.1:3001",
+          "http://localhost:8000",
+          "http://127.0.0.1:8000",
+          /^http:\/\/127\.0\.0\.1:\d+\/@excalidraw/,
+          /^http:\/\/localhost:\d+\/.*$/,
+          /^http:\/\/127\.0\.0\.1:\d+\/.*$/
+        ] : [])
       ],
       imgSrc: ["'self'", "data:", "https://picsum.photos", "https://www.w3schools.com"],
-      connectSrc: ["'self'", "http://localhost:3001", "http://127.0.0.1:3001", "http://localhost:8000", "http://127.0.0.1:8000", /^http:\/\/127\.0\.0\.1:\d+$/],
+      connectSrc: [
+        "'self'",
+        ...(!IS_PROD ? [
+          "http://localhost:3001",
+          "http://127.0.0.1:3001",
+          "http://localhost:8000",
+          "http://127.0.0.1:8000",
+          /^http:\/\/127\.0\.0\.1:\d+$/
+        ] : [])
+      ],
       fontSrc: ["'self'", "https://cdnjs.cloudflare.com"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'", "https://www.w3schools.com"],
@@ -46,14 +73,7 @@ app.use(helmet({
 app.use(compression());
 app.use(morgan('combined'));
 app.use(cors({
-  origin: [
-    'http://localhost:8000', 
-    'http://127.0.0.1:8000', 
-    'http://localhost:3001', 
-    'http://127.0.0.1:3001',
-    /^http:\/\/127\.0\.0\.1:\d+$/,
-    /^http:\/\/localhost:\d+$/
-  ],
+  origin: allowedOrigins,
   credentials: true
 }));
 

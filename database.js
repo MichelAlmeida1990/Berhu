@@ -1,17 +1,24 @@
 // SQLite Database for Berhu Platform
 const Database = require('better-sqlite3');
 const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcryptjs');
 
 // Database file path
-const dbPath = path.join(__dirname, 'berhu.db');
+const dbPath = process.env.DB_PATH || path.join(__dirname, 'berhu.db');
+
+// Ensure parent directory exists (useful for Render persistent disk mounts)
+const dbDir = path.dirname(dbPath);
+if (dbDir && dbDir !== '.' && !fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+}
 
 // Create database connection
 const db = new Database(dbPath);
 
 // Initialize database tables
 function initializeDatabase() {
-    console.log('🗄️ Initializing SQLite database...');
+    console.log(' Initializing SQLite database...');
     
     // Users table
     db.exec(`

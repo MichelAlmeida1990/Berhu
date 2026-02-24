@@ -111,7 +111,7 @@ function handleLogin(e) {
 // Authenticate User
 async function authenticateUser(email, password, remember) {
     try {
-        const response = await fetch('http://localhost:3001/api/auth/login', {
+        const response = await fetch('/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -349,7 +349,7 @@ function handleRegister(e) {
 // Register User
 async function registerUser(name, email, password) {
     try {
-        const response = await fetch('http://localhost:3001/api/auth/register', {
+        const response = await fetch('/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
