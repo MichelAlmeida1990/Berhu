@@ -642,16 +642,11 @@ async function loadRecentEvaluations() {
         container.innerHTML = '';
         recentEvaluations.forEach(evaluation => {
             const evaluationCard = createRecentEvaluationCard({
-                clientName: evaluation.user_name || evaluation.user_id || 'Cliente',
+                clientName: evaluation.user_name || 'Cliente',
                 sessionType: evaluation.type,
                 rating: evaluation.rating,
-                evolution: evaluation.notes || '',
-                submittedAt: evaluation.date,
-                recommendations: evaluation.recommendations || '',
-                nextSession: evaluation.next_session || '',
-                improvements: evaluation.improvements || [],
-                challenges: evaluation.challenges || [],
-                metrics: evaluation.metrics || {}
+                evolution: evaluation.notes,
+                submittedAt: evaluation.date
             });
             container.appendChild(evaluationCard);
         });

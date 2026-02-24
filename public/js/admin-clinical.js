@@ -1313,115 +1313,154 @@ window.generatePDFReport = function() {
     }, 2000);
 };
 
-// Load Scheduled Sessions
-window.loadScheduledSessions = function() {
-    const allSessions = JSON.parse(localStorage.getItem('berhu_all_sessions') || '[]');
-    const scheduledSessions = allSessions.filter(session => session.status === 'scheduled');
+function getSessionToken() {
+    const session = localStorage.getItem('berhu_session') || sessionStorage.getItem('berhu_session');
+    if (!session) return null;
+    try {
+        return JSON.parse(session).token;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Load Scheduled Sessions (real data from API)
+window.loadScheduledSessions = async function() {
     const container = document.getElementById('scheduled-sessions');
-    
-    if (scheduledSessions.length === 0) {
-        container.innerHTML = '<p class="text-sm text-gray-400">Nenhuma sessão agendada</p>';
+    container.innerHTML = '<p class="text-center text-gray-500 py-8"><i class="fas fa-spinner fa-spin mr-2"></i>Carregando sessões...</p>';
+
+    const token = getSessionToken();
+    if (!token) {
+        container.innerHTML = '<p class="text-sm text-gray-400">Sessão expirada. Faça login novamente.</p>';
         return;
     }
-    
-    // Sort by date and time
-    scheduledSessions.sort((a, b) => {
-        const dateA = new Date(a.date + ' ' + a.time);
-        const dateB = new Date(b.date + ' ' + b.time);
-        return dateA - dateB;
-    });
-    
-    // Filter future sessions
-    const futureSessions = scheduledSessions.filter(session => {
-        const sessionDateTime = new Date(session.date + ' ' + session.time);
-        return sessionDateTime >= new Date();
-    });
-    
-    if (futureSessions.length === 0) {
-        container.innerHTML = '<p class="text-sm text-gray-400">Nenhuma sessão futura agendada</p>';
-        return;
-    }
-    
-    container.innerHTML = futureSessions.map(session => {
-        const sessionDate = new Date(session.date + ' ' + session.time);
-        const isToday = session.date === new Date().toISOString().split('T')[0];
-        const isTomorrow = session.date === new Date(Date.now() + 86400000).toISOString().split('T')[0];
-        
-        let dateLabel = formatDate(session.date);
-        if (isToday) dateLabel = 'Hoje';
-        if (isTomorrow) dateLabel = 'Amanhã';
-        
-        // Define colors based on session type
-        const sessionColors = {
-            'Limpeza Áurica': 'from-purple-500 to-purple-700',
-            'Reiki': 'from-green-500 to-green-700',
-            'Meditação Chakras': 'from-blue-500 to-blue-700',
-            'Meditação Mindfulness': 'from-indigo-500 to-indigo-700',
-            'Meditação Curativa': 'from-pink-500 to-pink-700',
-            'Leitura de Aura': 'from-yellow-500 to-yellow-700',
-            'Cristais': 'from-teal-500 to-teal-700',
-            'Astrologia Terapêutica': 'from-orange-500 to-orange-700'
-        };
-        
-        const sessionColor = sessionColors[session.type] || 'from-gray-500 to-gray-700';
-        
-        return `
-            <div class="bg-gradient-to-r ${sessionColor} bg-opacity-20 backdrop-blur-lg rounded-xl p-4 border border-white border-opacity-30 transform hover:scale-105 transition-all duration-300 shadow-lg">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                                <i class="fas fa-spa text-white"></i>
+
+    try {
+        const response = await fetch('/api/therapist/appointments', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Erro ao carregar agendamentos');
+        }
+
+        const scheduled = (data || []).filter(a => a.status === 'scheduled');
+
+        if (scheduled.length === 0) {
+            container.innerHTML = '<p class="text-sm text-gray-400">Nenhuma sessão aguardando confirmação</p>';
+            return;
+        }
+
+        scheduled.sort((a, b) => {
+            const dateA = new Date(`${a.date}T${a.time}:00`);
+            const dateB = new Date(`${b.date}T${b.time}:00`);
+            return dateA - dateB;
+        });
+
+        container.innerHTML = scheduled.map(a => {
+            const isToday = a.date === new Date().toISOString().split('T')[0];
+            const isTomorrow = a.date === new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+            let dateLabel = formatDate(a.date);
+            if (isToday) dateLabel = 'Hoje';
+            if (isTomorrow) dateLabel = 'Amanhã';
+
+            return `
+                <div class="bg-white/5 backdrop-blur-lg rounded-xl p-4 border border-white/10 shadow-lg">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-purple-600/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-calendar-alt text-purple-300"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-white">${a.user_name || 'Cliente'}</div>
+                                    <div class="text-sm text-gray-400">${a.user_email || ''}</div>
+                                </div>
+                                ${isToday ? '<span class="px-3 py-1 bg-yellow-500/20 rounded-full text-xs text-yellow-200 font-semibold">Hoje</span>' : ''}
+                                ${isTomorrow ? '<span class="px-3 py-1 bg-blue-500/20 rounded-full text-xs text-blue-200 font-semibold">Amanhã</span>' : ''}
                             </div>
-                            <div>
-                                <div class="font-bold text-white text-lg">${session.patientName}</div>
-                                <div class="text-purple-100 text-sm">${session.type}</div>
+
+                            <div class="text-sm text-gray-200 font-semibold mb-2">${a.service}</div>
+
+                            <div class="grid grid-cols-2 gap-3 text-sm text-gray-300">
+                                <div class="flex items-center gap-2"><i class="fas fa-calendar-day text-gray-400"></i>${dateLabel}</div>
+                                <div class="flex items-center gap-2"><i class="fas fa-clock text-gray-400"></i>${a.time}</div>
                             </div>
-                            ${isToday ? '<span class="px-3 py-1 bg-yellow-500 bg-opacity-30 rounded-full text-xs text-yellow-100 font-semibold">Hoje</span>' : ''}
-                            ${isTomorrow ? '<span class="px-3 py-1 bg-blue-500 bg-opacity-30 rounded-full text-xs text-blue-100 font-semibold">Amanhã</span>' : ''}
+
+                            ${a.notes ? `
+                                <div class="mt-3 p-3 bg-black/20 rounded-lg border border-white/5">
+                                    <p class="text-xs text-gray-300">${a.notes}</p>
+                                </div>
+                            ` : ''}
                         </div>
-                        
-                        <div class="grid grid-cols-2 gap-3 text-white">
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-calendar-alt text-purple-200"></i>
-                                <span class="text-sm">${dateLabel}</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-clock text-purple-200"></i>
-                                <span class="text-sm">${session.time}</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-hourglass-half text-purple-200"></i>
-                                <span class="text-sm">${session.duration} min</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-user-md text-purple-200"></i>
-                                <span class="text-sm">${session.therapist.split(' - ')[0]}</span>
-                            </div>
+
+                        <div class="flex flex-col gap-2">
+                            <button onclick="confirmAppointment(${a.id})" class="bg-green-600/20 hover:bg-green-600/30 text-green-200 px-3 py-2 rounded-lg text-xs font-semibold transition">
+                                <i class="fas fa-check mr-2"></i>Confirmar
+                            </button>
+                            <button onclick="cancelAppointmentByTherapist(${a.id})" class="bg-red-600/20 hover:bg-red-600/30 text-red-200 px-3 py-2 rounded-lg text-xs font-semibold transition">
+                                <i class="fas fa-times mr-2"></i>Cancelar
+                            </button>
                         </div>
-                        
-                        ${session.notes ? `
-                            <div class="mt-3 p-2 bg-white bg-opacity-10 rounded-lg">
-                                <p class="text-xs text-purple-100">
-                                    <i class="fas fa-sticky-note mr-1"></i>
-                                    ${session.notes.length > 80 ? session.notes.substring(0, 80) + '...' : session.notes}
-                                </p>
-                            </div>
-                        ` : ''}
-                    </div>
-                    
-                    <div class="flex flex-col space-y-2 ml-3">
-                        <button onclick="editScheduledSession(${session.id})" class="bg-white bg-opacity-20 hover:bg-opacity-30 p-2 rounded-lg transition group" title="Editar">
-                            <i class="fas fa-edit text-white group-hover:scale-110 transition-transform"></i>
-                        </button>
-                        <button onclick="cancelScheduledSession(${session.id})" class="bg-red-500 bg-opacity-20 hover:bg-opacity-30 p-2 rounded-lg transition group" title="Cancelar">
-                            <i class="fas fa-times text-white group-hover:scale-110 transition-transform"></i>
-                        </button>
                     </div>
                 </div>
-            </div>
-        `;
-    }).join('');
+            `;
+        }).join('');
+
+    } catch (error) {
+        container.innerHTML = `<p class="text-sm text-gray-400">${error.message}</p>`;
+    }
+};
+
+window.confirmAppointment = async function(appointmentId) {
+    const token = getSessionToken();
+    if (!token) return;
+    try {
+        const response = await fetch(`/api/appointments/${appointmentId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status: 'confirmed' })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Erro ao confirmar');
+        }
+        showNotification('Agendamento confirmado com sucesso!', 'success');
+        loadScheduledSessions();
+    } catch (error) {
+        showNotification(error.message || 'Erro ao confirmar', 'error');
+    }
+};
+
+window.cancelAppointmentByTherapist = async function(appointmentId) {
+    if (!confirm('Tem certeza que deseja cancelar este agendamento?')) {
+        return;
+    }
+    const token = getSessionToken();
+    if (!token) return;
+    try {
+        const response = await fetch(`/api/appointments/${appointmentId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status: 'cancelled' })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Erro ao cancelar');
+        }
+        showNotification('Agendamento cancelado com sucesso!', 'success');
+        loadScheduledSessions();
+    } catch (error) {
+        showNotification(error.message || 'Erro ao cancelar', 'error');
+    }
 };
 
 // Edit Scheduled Session

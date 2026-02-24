@@ -477,7 +477,7 @@ function throttle(func, limit) {
 
 // Check if Auth Page
 function isAuthPage() {
-    const authPages = ['auth.html', 'login.html', 'register.html'];
+    const authPages = ['auth.html', 'login.html', 'register.html', 'auth', 'login', 'register'];
     const currentPage = window.location.pathname.split('/').pop();
     return authPages.includes(currentPage);
 }

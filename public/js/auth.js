@@ -1,8 +1,11 @@
 // Authentication JavaScript for Berhu Platform
 
-// Initialize Auth Page
+// Initialize Auth Page (only on auth routes)
 document.addEventListener('DOMContentLoaded', function() {
-    initializeAuth();
+    const currentPage = window.location.pathname.split('/').pop();
+    if (currentPage === 'auth.html' || currentPage === 'auth') {
+        initializeAuth();
+    }
 });
 
 // Initialize Authentication
@@ -447,6 +450,62 @@ function logout() {
     sessionStorage.removeItem('berhu_session');
     window.location.href = 'auth.html';
 }
+
+// Check authentication and redirect if not logged in (for other pages)
+function checkAuth() {
+    const session = localStorage.getItem('berhu_session') || sessionStorage.getItem('berhu_session');
+    
+    if (!session) {
+        window.location.href = 'auth.html';
+        return false;
+    }
+    
+    try {
+        const sessionData = JSON.parse(session);
+        
+        // Check if session is expired
+        if (sessionData.expiresAt && new Date(sessionData.expiresAt) <= new Date()) {
+            localStorage.removeItem('berhu_session');
+            sessionStorage.removeItem('berhu_session');
+            window.location.href = 'auth.html';
+            return false;
+        }
+        
+        return sessionData;
+    } catch (error) {
+        console.error('Invalid session format:', error);
+        localStorage.removeItem('berhu_session');
+        sessionStorage.removeItem('berhu_session');
+        window.location.href = 'auth.html';
+        return false;
+    }
+}
+
+// Get current user
+function getCurrentUser() {
+    const sessionData = checkAuth();
+    return sessionData ? sessionData.user : null;
+}
+
+// Get auth token
+function getAuthToken() {
+    const session = localStorage.getItem('berhu_session') || sessionStorage.getItem('berhu_session');
+    if (!session) return null;
+    
+    try {
+        const sessionData = JSON.parse(session);
+        return sessionData.token;
+    } catch (error) {
+        console.error('Error parsing session:', error);
+        return null;
+    }
+}
+
+// Export functions for global use
+window.checkAuth = checkAuth;
+window.getCurrentUser = getCurrentUser;
+window.getAuthToken = getAuthToken;
+window.logout = logout;
 
 // Fill Demo Account
 function fillDemo(email) {

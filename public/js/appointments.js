@@ -308,7 +308,7 @@ function loadTimeSlots(date) {
 // Check if Time Slot is Booked
 function isTimeSlotBooked(date, time) {
     const dateStr = date.toDateString();
-    const userAppointments = JSON.parse(localStorage.getItem('berhu_appointments') || '[]');
+    const userAppointments = appointments;
     
     // Check if there's already an appointment for this date and time
     return userAppointments.some(appointment => {
@@ -429,18 +429,11 @@ function confirmAppointment() {
     }
     
     const service = services[selectedService];
-    const appointment = {
-        id: Date.now(),
-        service: service.name,
-        serviceType: selectedService,
-        date: selectedDate.toISOString(),
+    const appointmentPayload = {
+        date: selectedDate.toISOString().split('T')[0],
         time: selectedTime,
-        duration: service.duration,
-        price: service.price,
-        professional: service.professional,
-        status: 'confirmed',
-        createdAt: new Date().toISOString(),
-        userId: window.currentUser?.email || 'anonymous'
+        service: service.name,
+        notes: `Profissional: ${service.professional} | Duração: ${service.duration} | Valor: R$ ${service.price}`
     };
     
     // Show loading
@@ -449,36 +442,36 @@ function confirmAppointment() {
     confirmBtn.disabled = true;
     confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Agendando...';
     
-    // Simulate API call
-    setTimeout(() => {
-        // Save appointment
-        saveAppointment(appointment);
-        
-        // Show success modal
-        showSuccessModal(appointment);
-        
-        // Reset selection
+    const session = localStorage.getItem('berhu_session') || sessionStorage.getItem('berhu_session');
+    const { token } = JSON.parse(session);
+
+    fetch('/api/appointments', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(appointmentPayload)
+    })
+    .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Erro ao agendar');
+        }
+        return data;
+    })
+    .then((createdAppointment) => {
+        showSuccessModal(createdAppointment);
         resetSelection();
-        
-        // Reset button
+        loadMyAppointments();
+    })
+    .catch((error) => {
+        showNotification(error.message || 'Erro ao agendar', 'error');
+    })
+    .finally(() => {
         confirmBtn.disabled = false;
         confirmBtn.innerHTML = originalText;
-    }, 1500);
-}
-
-// Save Appointment
-function saveAppointment(appointment) {
-    // Get existing appointments
-    const existingAppointments = JSON.parse(localStorage.getItem('berhu_appointments') || '[]');
-    
-    // Add new appointment
-    existingAppointments.push(appointment);
-    
-    // Save to localStorage
-    localStorage.setItem('berhu_appointments', JSON.stringify(existingAppointments));
-    
-    // Update display
-    loadMyAppointments();
+    });
 }
 
 // Show Success Modal
@@ -493,14 +486,13 @@ function showSuccessModal(appointment) {
     });
     
     // Update modal content with appointment details
-    modal.querySelector('h3').textContent = 'Agendamento Confirmado!';
+    modal.querySelector('h3').textContent = 'Solicitação de Agendamento Enviada!';
     modal.querySelector('p').innerHTML = `
-        Sua sessão de <strong>${appointment.service}</strong> foi agendada com sucesso!<br><br>
+        Sua sessão de <strong>${appointment.service}</strong> foi registrada e está <strong>aguardando confirmação da terapeuta</strong>.<br><br>
         <strong>Data:</strong> ${dateStr}<br>
         <strong>Horário:</strong> ${appointment.time}<br>
-        <strong>Duração:</strong> ${appointment.duration}<br>
-        <strong>Valor:</strong> R$ ${appointment.price}<br><br>
-        Você receberá um e-mail de confirmação com os detalhes.
+        <strong>Status:</strong> ${appointment.status === 'confirmed' ? 'Confirmado' : 'Aguardando Confirmação'}<br><br>
+        Assim que a terapeuta confirmar, o status vai mudar para <strong>Confirmado</strong>.
     `;
     
     modal.classList.remove('hidden');
@@ -553,21 +545,39 @@ function resetSelection() {
 // Load My Appointments
 function loadMyAppointments() {
     const appointmentsContainer = document.getElementById('my-appointments');
-    const userAppointments = JSON.parse(localStorage.getItem('berhu_appointments') || '[]');
-    
-    if (userAppointments.length === 0) {
-        appointmentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Nenhum agendamento encontrado</p>';
-        return;
-    }
-    
-    appointmentsContainer.innerHTML = '';
-    
-    // Sort appointments by date
-    userAppointments.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    userAppointments.forEach(appointment => {
-        const appointmentCard = createAppointmentCard(appointment);
-        appointmentsContainer.appendChild(appointmentCard);
+    appointmentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Carregando...</p>';
+
+    const session = localStorage.getItem('berhu_session') || sessionStorage.getItem('berhu_session');
+    const { token } = JSON.parse(session);
+
+    fetch('/api/appointments', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Erro ao carregar agendamentos');
+        }
+        return data;
+    })
+    .then((userAppointments) => {
+        appointments = userAppointments;
+        if (userAppointments.length === 0) {
+            appointmentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Nenhum agendamento encontrado</p>';
+            return;
+        }
+
+        appointmentsContainer.innerHTML = '';
+        userAppointments.sort((a, b) => new Date(b.date) - new Date(a.date));
+        userAppointments.forEach(appointment => {
+            const appointmentCard = createAppointmentCard(appointment);
+            appointmentsContainer.appendChild(appointmentCard);
+        });
+    })
+    .catch((error) => {
+        appointmentsContainer.innerHTML = `<p class="text-gray-400 text-sm">${error.message}</p>`;
     });
 }
 
@@ -584,12 +594,14 @@ function createAppointmentCard(appointment) {
     });
     
     const statusColors = {
+        scheduled: 'yellow',
         confirmed: 'green',
         completed: 'blue',
         cancelled: 'red'
     };
     
     const statusTexts = {
+        scheduled: 'Aguardando Confirmação',
         confirmed: 'Confirmado',
         completed: 'Realizado',
         cancelled: 'Cancelado'
@@ -602,7 +614,7 @@ function createAppointmentCard(appointment) {
         <div class="flex justify-between items-start mb-2">
             <div>
                 <h4 class="font-semibold text-sm">${appointment.service}</h4>
-                <p class="text-xs text-gray-400">${appointment.professional}</p>
+                <p class="text-xs text-gray-400">${appointment.notes || ''}</p>
             </div>
             <span class="bg-${statusColor}-600 bg-opacity-20 px-2 py-1 rounded text-${statusColor}-300 text-xs">
                 ${statusText}
@@ -619,8 +631,8 @@ function createAppointmentCard(appointment) {
         </div>
         
         <div class="flex justify-between items-center mt-2">
-            <span class="text-xs font-semibold text-purple-300">R$ ${appointment.price}</span>
-            ${appointment.status === 'confirmed' ? `
+            <span class="text-xs font-semibold text-purple-300"></span>
+            ${(appointment.status === 'confirmed' || appointment.status === 'scheduled') ? `
                 <button onclick="cancelAppointment(${appointment.id})" 
                         class="text-xs text-red-400 hover:text-red-300 transition">
                     Cancelar
@@ -638,22 +650,34 @@ function cancelAppointment(appointmentId) {
         return;
     }
     
-    // Get appointments
-    const appointments = JSON.parse(localStorage.getItem('berhu_appointments') || '[]');
-    
-    // Find and update appointment
-    const appointmentIndex = appointments.findIndex(a => a.id === appointmentId);
-    if (appointmentIndex !== -1) {
-        appointments[appointmentIndex].status = 'cancelled';
-        
-        // Save updated appointments
-        localStorage.setItem('berhu_appointments', JSON.stringify(appointments));
-        
-        // Reload appointments
+    const session = localStorage.getItem('berhu_session') || sessionStorage.getItem('berhu_session');
+    const { token } = JSON.parse(session);
+
+    fetch(`/api/appointments/${appointmentId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: 'cancelled' })
+    })
+    .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Erro ao cancelar');
+        }
+        return data;
+    })
+    .then(() => {
         loadMyAppointments();
-        
+        if (selectedDate) {
+            loadTimeSlots(selectedDate);
+        }
         showNotification('Agendamento cancelado com sucesso', 'success');
-    }
+    })
+    .catch((error) => {
+        showNotification(error.message || 'Erro ao cancelar', 'error');
+    });
 }
 
 // Calendar Navigation

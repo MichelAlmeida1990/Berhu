@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Radiônico - Berhu</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#8B5CF6',
+                            dark: '#0a0a0f',
+                            accent: '#D946EF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .frequency-row {
+            transition: all 0.3s ease;
+        }
+        
+        .frequency-row:hover {
+            transform: translateX(4px);
+        }
+        
+        @media print {
+            body {
+                background-color: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .glass-panel {
+                background: white !important;
+                border: 1px solid #e5e7eb !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-brand-dark via-purple-950 to-brand-dark min-h-screen text-white">
+    
+    <!-- Header -->
+    <header class="glass-panel border-b border-white/10 no-print">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.location.href='index.html'" class="text-white/70 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-brand-purple to-brand-accent bg-clip-text text-transparent">
+                        Mapa Radiônico
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="generateReport()" class="px-4 py-2 bg-gradient-to-r from-brand-purple to-brand-accent rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
+                        Gerar Relatório
+                    </button>
+                    <button onclick="window.print()" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors font-medium">
+                        Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        
+        <!-- Treatment Form -->
+        <section class="mb-8">
+            <div class="glass-panel rounded-2xl p-6">
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Novo Tratamento Radiônico
+                </h2>
+                
+                <form id="treatmentForm" class="space-y-6">
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Cliente</label>
+                            <select id="clientSelect" class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:border-brand-purple focus:outline-none transition-colors">
+                                <option value="">Selecione um cliente (opcional)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Nome do Cliente</label>
+                            <input type="text" id="clientName" required class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:border-brand-purple focus:outline-none transition-colors" placeholder="Fabiana Moreira">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Data do Tratamento</label>
+                            <input type="date" id="treatmentDate" required class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:border-brand-purple focus:outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Grupo</label>
+                            <input type="text" id="groupName" class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:border-brand-purple focus:outline-none transition-colors" placeholder="Coletivo 0303 Chave">
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Tempo de Execução (dias)</label>
+                            <input type="number" id="executionDays" value="21" class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:border-brand-purple focus:outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Visível para Cliente</label>
+                            <div class="flex items-center space-x-3 pt-3">
+                                <input type="checkbox" id="isVisibleToClient" checked class="w-4 h-4 text-brand-purple rounded focus:ring-brand-purple">
+                                <label for="isVisibleToClient" class="text-sm">Cliente pode visualizar este tratamento</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Objetivo</label>
+                        <textarea id="objective" required rows="3" class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:border-brand-purple focus:outline-none transition-colors" placeholder="Abertura de caminhos, Prosperidade e Saúde"></textarea>
+                    </div>
+                    
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-medium">Comandos Quânticos</h3>
+                            <button type="button" onclick="addCommand()" class="px-3 py-1 bg-brand-purple/20 text-brand-purple rounded-lg hover:bg-brand-purple/30 transition-colors text-sm">
+                                + Adicionar Comando
+                            </button>
+                        </div>
+                        <div id="commandsList" class="space-y-3">
+                            <!-- Commands will be added here dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-medium">Setores da Vida</h3>
+                            <button type="button" onclick="toggleAllSectors()" class="px-3 py-1 bg-brand-purple/20 text-brand-purple rounded-lg hover:bg-brand-purple/30 transition-colors text-sm">
+                                Ativar Todos
+                            </button>
+                        </div>
+                        <div id="sectorsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <!-- Sectors will be added here dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" onclick="loadSampleData()" class="px-6 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors font-medium">
+                            Carregar Exemplo
+                        </button>
+                        <button type="submit" class="px-6 py-2 bg-gradient-to-r from-brand-purple to-brand-accent rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
+                            Salvar Tratamento
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Emotional Frequencies Table -->
+        <section class="mb-8">
+            <div class="glass-panel rounded-2xl p-6">
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Relação de Frequências Emocionais
+                </h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-white/10">
+                                <th class="text-left py-3 px-4">Visão de Deus</th>
+                                <th class="text-left py-3 px-4">Visão da Vida</th>
+                                <th class="text-left py-3 px-4">Nível</th>
+                                <th class="text-left py-3 px-4">Frequência</th>
+                                <th class="text-left py-3 px-4">Emoção</th>
+                                <th class="text-left py-3 px-4">Processo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="frequenciesTable">
+                            <!-- Frequencies will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Previous Treatments -->
+        <section>
+            <div class="glass-panel rounded-2xl p-6">
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Tratamentos Anteriores
+                </h2>
+                
+                <div id="previousTreatments" class="space-y-4">
+                    <!-- Previous treatments will be loaded here -->
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script>
+        // Default sectors
+        const defaultSectors = [
+            { number: 1, name: "A personalidade da pessoa, o seu eu interior" },
+            { number: 2, name: "Dinheiro, Bens, Finanças, Contas a Pagar e Receber" },
+            { number: 3, name: "A mente consciente, a forma de comunicar-se com o mundo" },
+            { number: 4, name: "O Lar, a harmonia dentro da casa onde vive" },
+            { number: 5, name: "O Amor, A Vida Afetiva" },
+            { number: 6, name: "O Trabalho, a vida profissional, a carreira" },
+            { number: 7, name: "Os Relacionamentos interpessoais" },
+            { number: 8, name: "A Saúde física" },
+            { number: 9, name: "A Espiritualidade, a religiosidade" },
+            { number: 10, name: "As Realizações, a força para conquistar o que se deseja" },
+            { number: 11, name: "O Âmbito Familiar" },
+            { number: 12, name: "As Missões Cármicas, ter força para cumpri-las e superá-las" }
+        ];
+
+        // Default commands
+        const defaultCommands = [
+            { name: "Equilibrio dos Chakras", description: "Ajusta para que todos os chakras fiquem em equilibrio o que ajuda na melhoria da saúde física, maior estabilidade emocional e maior clareza mental." },
+            { name: "Equilibrio da AURA", description: "Equilibra sua cor para um estado saudavél como bem-estar físico, equilíbrio emocional, clareza mental, relações interpessoais mais positivas e uma possível conexão espiritual" },
+            { name: "BIO ENERGIA", description: "Harmoniza para o ideal ficando na maxima potência de 10 sendo que essa é energia de vida e precisa estar em positivo entre 8 a 10." },
+            { name: "Ajuste de Pequenos desequilibrios", description: "Envia comandos de harmonização de energias no espiritual, relacionamentos, mental, fisico, energético no lar e crenças limitantes" },
+            { name: "Abertura de Caminhos", description: "Limpa os bloqueios do caminho que estão atrapalhando os objetivos para que venham coisas boas" },
+            { name: "Frequência Quântica Vibratória", description: "Ajusta para que tenha uma boa energia com os benefícios de melhora no bem-estar físico e emocional, atração de coisas positivas, melhora na saúde, clareza mental e conexão espiritual" },
+            { name: "Balsamo Energético", description: "Recebe na sua energia o poder das cores agindo como um energizante no seu estado fisico, mental e energético" },
+            { name: "Limpeza de energias nocivas", description: "Atua na limpeza de espiritos (obcessores e sofredores) que estão atrapalhando e causando mal a vida do cliente." },
+            { name: "Mais qualidade de vida", description: "Com nutrição de Energias que irão atuar no Perdão, Culpa, Gratidão, Determinação, Alegria, Felicidade, Liberdade, Não Julgamento, Confiança, Coragem, Merecimento, Fé e o Amor" },
+            { name: "Prosperidade", description: "Envia energias que irão tratar a prosperidade e abundancia abrindo oportunidades para ganhos esperados e inesperados" },
+            { name: "Saúde e Regeneração fisica", description: "Envia energias que irão ajudar na cura fisica de problemas de saude e também ajudar na regeneração" }
+        ];
+
+        let commands = [];
+        let sectors = [];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadClients();
+            loadEmotionalFrequencies();
+            loadPreviousTreatments();
+            initializeSectors();
+            
+            // Set today's date as default
+            document.getElementById('treatmentDate').valueAsDate = new Date();
+            
+            // Form submission
+            document.getElementById('treatmentForm').addEventListener('submit', saveTreatment);
+            
+            // Client selection change
+            document.getElementById('clientSelect').addEventListener('change', function(e) {
+                const selectedOption = e.target.options[e.target.selectedIndex];
+                const clientNameInput = document.getElementById('clientName');
+                
+                if (e.target.value) {
+                    clientNameInput.value = selectedOption.text;
+                    clientNameInput.readOnly = true;
+                    clientNameInput.classList.add('opacity-70');
+                } else {
+                    clientNameInput.readOnly = false;
+                    clientNameInput.classList.remove('opacity-70');
+                }
+            });
+        });
+
+        async function loadClients() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/clients', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const clients = await response.json();
+                    const select = document.getElementById('clientSelect');
+                    
+                    clients.forEach(client => {
+                        const option = document.createElement('option');
+                        option.value = client.id;
+                        option.textContent = client.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading clients:', error);
+            }
+        }
+
+        function initializeSectors() {
+            sectors = defaultSectors.map(sector => ({ ...sector, activated: true }));
+            renderSectors();
+        }
+
+        function renderSectors() {
+            const container = document.getElementById('sectorsList');
+            container.innerHTML = sectors.map(sector => `
+                <div class="flex items-center space-x-3 p-3 bg-white/5 rounded-lg border border-white/10">
+                    <input type="checkbox" id="sector-${sector.number}" ${sector.activated ? 'checked' : ''} 
+                           onchange="toggleSector(${sector.number})" 
+                           class="w-4 h-4 text-brand-purple rounded focus:ring-brand-purple">
+                    <label for="sector-${sector.number}" class="flex-1 text-sm cursor-pointer">
+                        ${sector.number} – ${sector.name}
+                    </label>
+                </div>
+            `).join('');
+        }
+
+        function toggleSector(number) {
+            const sector = sectors.find(s => s.number === number);
+            if (sector) {
+                sector.activated = !sector.activated;
+            }
+        }
+
+        function toggleAllSectors() {
+            const allActivated = sectors.every(s => s.activated);
+            sectors.forEach(s => s.activated = !allActivated);
+            renderSectors();
+        }
+
+        function addCommand() {
+            const command = {
+                name: '',
+                description: '',
+                status: 'enviado'
+            };
+            commands.push(command);
+            renderCommands();
+        }
+
+        function removeCommand(index) {
+            commands.splice(index, 1);
+            renderCommands();
+        }
+
+        function renderCommands() {
+            const container = document.getElementById('commandsList');
+            container.innerHTML = commands.map((cmd, index) => `
+                <div class="p-4 bg-white/5 rounded-lg border border-white/10 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <input type="text" value="${cmd.name}" placeholder="Nome do Comando" 
+                               onchange="updateCommand(${index}, 'name', this.value)"
+                               class="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:border-brand-purple focus:outline-none">
+                        <button type="button" onclick="removeCommand(${index})" 
+                                class="ml-3 text-red-400 hover:text-red-300 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <textarea placeholder="Descrição do Comando" 
+                              onchange="updateCommand(${index}, 'description', this.value)"
+                              class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:border-brand-purple focus:outline-none resize-none" 
+                              rows="2">${cmd.description}</textarea>
+                </div>
+            `).join('');
+        }
+
+        function updateCommand(index, field, value) {
+            if (commands[index]) {
+                commands[index][field] = value;
+            }
+        }
+
+        function loadSampleData() {
+            document.getElementById('clientName').value = 'Fabiana Moreira';
+            document.getElementById('treatmentDate').value = '2024-03-03';
+            document.getElementById('groupName').value = 'Coletivo 0303 Chave';
+            document.getElementById('objective').value = 'Abertura de caminhos, Prosperidade e Saúde';
+            document.getElementById('executionDays').value = '21';
+            
+            commands = defaultCommands.map(cmd => ({ ...cmd }));
+            renderCommands();
+            
+            sectors.forEach(s => s.activated = true);
+            renderSectors();
+        }
+
+        async function saveTreatment(e) {
+            e.preventDefault();
+            
+            const selectedClientId = document.getElementById('clientSelect').value;
+            
+            const treatmentData = {
+                userId: selectedClientId ? parseInt(selectedClientId) : null,
+                clientName: document.getElementById('clientName').value,
+                treatmentDate: document.getElementById('treatmentDate').value,
+                groupName: document.getElementById('groupName').value,
+                objective: document.getElementById('objective').value,
+                executionDays: parseInt(document.getElementById('executionDays').value),
+                is_visible_to_client: document.getElementById('isVisibleToClient').checked,
+                commands: commands,
+                sectors: sectors
+            };
+            
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/radionic-treatments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(treatmentData)
+                });
+                
+                if (response.ok) {
+                    alert('Tratamento salvo com sucesso!' + (selectedClientId ? '\nO cliente poderá visualizar no histórico.' : '\nTratamento salvo sem cliente cadastrado.'));
+                    document.getElementById('treatmentForm').reset();
+                    commands = [];
+                    sectors = defaultSectors.map(sector => ({ ...sector, activated: true }));
+                    renderCommands();
+                    renderSectors();
+                    loadPreviousTreatments();
+                } else {
+                    const error = await response.json();
+                    alert('Erro ao salvar tratamento: ' + error.error);
+                }
+            } catch (error) {
+                alert('Erro ao salvar tratamento: ' + error.message);
+            }
+        }
+
+        async function loadEmotionalFrequencies() {
+            try {
+                const response = await fetch('/api/emotional-frequencies');
+                const frequencies = await response.json();
+                
+                const tbody = document.getElementById('frequenciesTable');
+                tbody.innerHTML = frequencies.map(freq => `
+                    <tr class="frequency-row border-b border-white/5 hover:bg-white/5" style="background-color: ${freq.color_code}20;">
+                        <td class="py-3 px-4">${freq.god_vision}</td>
+                        <td class="py-3 px-4">${freq.life_vision}</td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium" style="background-color: ${freq.color_code}40; color: ${freq.color_code};">
+                                ${freq.level}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">${freq.frequency_range}</td>
+                        <td class="py-3 px-4">${freq.emotion}</td>
+                        <td class="py-3 px-4">${freq.process}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading frequencies:', error);
+            }
+        }
+
+        async function loadPreviousTreatments() {
+            try {
+                const token = getAuthToken();
+                const response = await fetch('/api/radionic-treatments', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const treatments = await response.json();
+                    const container = document.getElementById('previousTreatments');
+                    
+                    if (treatments.length === 0) {
+                        container.innerHTML = '<p class="text-white/50 text-center py-8">Nenhum tratamento encontrado.</p>';
+                        return;
+                    }
+                    
+                    container.innerHTML = treatments.map(treatment => `
+                        <div class="p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors cursor-pointer" 
+                             onclick="viewTreatment(${treatment.id})">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-medium">${treatment.client_name}</h3>
+                                    <p class="text-sm text-white/70">${treatment.treatment_date} • ${treatment.group_name || 'Sem grupo'}</p>
+                                    <p class="text-sm text-white/50 mt-1">${treatment.objective}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-sm text-white/50">${treatment.execution_days} dias</span>
+                                    <p class="text-xs text-white/30">${new Date(treatment.created_at).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading treatments:', error);
+            }
+        }
+
+        async function viewTreatment(treatmentId) {
+            try {
+                const token = getAuthToken();
+                const response = await fetch(`/api/radionic-treatments/${treatmentId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const treatment = await response.json();
+                    // Load treatment data into form for viewing/editing
+                    document.getElementById('clientName').value = treatment.client_name;
+                    document.getElementById('treatmentDate').value = treatment.treatment_date;
+                    document.getElementById('groupName').value = treatment.group_name || '';
+                    document.getElementById('objective').value = treatment.objective;
+                    document.getElementById('executionDays').value = treatment.execution_days;
+                    
+                    commands = treatment.commands.map(cmd => ({
+                        name: cmd.command_name,
+                        description: cmd.description,
+                        status: cmd.status
+                    }));
+                    renderCommands();
+                    
+                    sectors = treatment.sectors.map(sector => ({
+                        number: sector.sector_number,
+                        name: sector.sector_name,
+                        activated: sector.activated
+                    }));
+                    renderSectors();
+                    
+                    // Scroll to form
+                    document.getElementById('treatmentForm').scrollIntoView({ behavior: 'smooth' });
+                }
+            } catch (error) {
+                console.error('Error loading treatment:', error);
+            }
+        }
+
+        function generateReport() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

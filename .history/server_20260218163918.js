@@ -25,16 +25,12 @@ app.use(helmet({
         "'unsafe-inline'",
         "'wasm-unsafe-eval'",
         "https://cdn.jsdelivr.net",
-        "http://localhost:3001",
-        "http://127.0.0.1:3001",
         "http://localhost:8000",
-        "http://127.0.0.1:8000",
         /^http:\/\/127\.0\.0\.1:\d+\/@excalidraw/,
-        /^http:\/\/localhost:\d+\/.*$/,
-        /^http:\/\/127\.0\.0\.1:\d+\/.*$/
+        /^http:\/\/localhost:8000\/.*$/
       ],
       imgSrc: ["'self'", "data:", "https://picsum.photos", "https://www.w3schools.com"],
-      connectSrc: ["'self'", "http://localhost:3001", "http://127.0.0.1:3001", "http://localhost:8000", "http://127.0.0.1:8000", /^http:\/\/127\.0\.0\.1:\d+$/],
+      connectSrc: ["'self'", "http://localhost:3001", "http://127.0.0.1:3001", /^http:\/\/127\.0\.0\.1:\d+$/],
       fontSrc: ["'self'", "https://cdnjs.cloudflare.com"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'", "https://www.w3schools.com"],
@@ -46,14 +42,7 @@ app.use(helmet({
 app.use(compression());
 app.use(morgan('combined'));
 app.use(cors({
-  origin: [
-    'http://localhost:8000', 
-    'http://127.0.0.1:8000', 
-    'http://localhost:3001', 
-    'http://127.0.0.1:3001',
-    /^http:\/\/127\.0\.0\.1:\d+$/,
-    /^http:\/\/localhost:\d+$/
-  ],
+  origin: ['http://localhost:8000', 'http://127.0.0.1:8000', 'http://127.0.0.1:54106', 'http://localhost:3001', /^http:\/\/127\.0\.0\.1:\d+$/],
   credentials: true
 }));
 
@@ -212,201 +201,19 @@ app.post('/api/appointments', verifyToken, (req, res) => {
   res.status(201).json(appointment);
 });
 
-app.get('/api/therapist/appointments', verifyToken, (req, res) => {
-  if (req.user.plan !== 'therapist' && req.user.plan !== 'admin') {
-    return res.status(403).json({ error: 'Acesso restrito a terapeutas' });
-  }
-  const appointments = db.getAllAppointments();
-  res.json(appointments);
-});
-
-app.patch('/api/appointments/:id', verifyToken, (req, res) => {
-  const appointmentId = parseInt(req.params.id);
-  const existing = db.getAppointmentById(appointmentId);
-  if (!existing) {
-    return res.status(404).json({ error: 'Agendamento não encontrado' });
-  }
-
-  const { status, notes } = req.body;
-  const updates = {};
-  if (status) updates.status = status;
-  if (notes !== undefined) updates.notes = notes;
-
-  const isTherapist = req.user.plan === 'therapist' || req.user.plan === 'admin';
-  const isOwner = existing.user_id === req.user.id;
-
-  if (isTherapist) {
-    if (status && !['scheduled', 'confirmed', 'completed', 'cancelled'].includes(status)) {
-      return res.status(400).json({ error: 'Status inválido' });
-    }
-    db.updateAppointment(appointmentId, updates);
-    return res.json(db.getAppointmentById(appointmentId));
-  }
-
-  if (isOwner) {
-    if (status && status !== 'cancelled') {
-      return res.status(403).json({ error: 'Ação não permitida' });
-    }
-    db.updateAppointment(appointmentId, { status: 'cancelled', ...(notes !== undefined ? { notes } : {}) });
-    return res.json(db.getAppointmentById(appointmentId));
-  }
-
-  return res.status(403).json({ error: 'Acesso negado' });
-});
-
 // Therapy Sessions Routes
-// Cliente: listar apenas sessões visíveis
 app.get('/api/therapy-sessions', verifyToken, (req, res) => {
-  const userSessions = db.getUserTherapySessions(req.user.id, true);
-  const radionicTreatments = db.getClientRadionicTreatments(req.user.id);
-  
-  // Combinar sessões de terapia e tratamentos radiônicos
-  const allSessions = [...userSessions, ...radionicTreatments]
-    .sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
-  
-  res.json(allSessions);
+  const userSessions = db.getUserTherapySessions(req.user.id);
+  res.json(userSessions);
 });
 
-// Terapeuta: criar avaliação para cliente
 app.post('/api/therapy-sessions', verifyToken, (req, res) => {
-  // Só terapeuta ou admin pode criar avaliação
-  if (req.user.plan !== 'therapist' && req.user.plan !== 'admin') {
-    return res.status(403).json({ error: 'Acesso restrito a terapeutas' });
-  }
-  const {
-    user_id, // id do cliente avaliado
-    date,
-    type,
-    notes,
-    metrics,
-    recommendations,
-    next_session,
-    improvements,
-    challenges,
-    rating,
-    is_visible_to_client
-  } = req.body;
-  if (!user_id || !date || !type) {
-    return res.status(400).json({ error: 'Campos obrigatórios faltando' });
-  }
-  const sessionId = db.createTherapySession({
-    user_id,
-    therapist_id: req.user.id,
-    date,
-    type,
-    notes,
-    metrics,
-    recommendations,
-    next_session,
-    improvements,
-    challenges,
-    rating,
-    is_visible_to_client
-  });
-  const session = db.getTherapistSessions(req.user.id).find(s => s.id === sessionId);
+  const { date, type, notes, metrics } = req.body;
+  
+  const sessionId = db.createTherapySession(req.user.id, date, type, notes, metrics);
+  const session = db.getUserTherapySessions(req.user.id).find(s => s.id === sessionId);
+
   res.status(201).json(session);
-});
-
-// Radionic Map Routes
-app.get('/api/emotional-frequencies', (req, res) => {
-  const frequencies = db.getEmotionalFrequencies();
-  res.json(frequencies);
-});
-
-app.get('/api/radionic-treatments', verifyToken, (req, res) => {
-  // Apenas terapeutas e admin podem ver todos os tratamentos
-  if (req.user.plan !== 'therapist' && req.user.plan !== 'admin') {
-    return res.status(403).json({ error: 'Acesso restrito a terapeutas' });
-  }
-  const treatments = db.getAllRadionicTreatments();
-  res.json(treatments);
-});
-
-app.post('/api/radionic-treatments', verifyToken, (req, res) => {
-  // Apenas terapeutas e admin podem criar tratamentos
-  if (req.user.plan !== 'therapist' && req.user.plan !== 'admin') {
-    return res.status(403).json({ error: 'Acesso restrito a terapeutas' });
-  }
-  
-  const { userId, clientName, treatmentDate, groupName, objective, executionDays, commands, sectors, is_visible_to_client } = req.body;
-  
-  if (!clientName || !treatmentDate || !objective) {
-    return res.status(400).json({ error: 'Campos obrigatórios faltando' });
-  }
-  
-  // Criar tratamento
-  const treatmentResult = db.createRadionicTreatment({
-    userId: userId || null, // Se não especificado, fica null (cliente não cadastrado)
-    clientName,
-    treatmentDate,
-    groupName,
-    objective,
-    executionDays,
-    therapistId: req.user.id,
-    is_visible_to_client
-  });
-  
-  const treatmentId = treatmentResult.lastInsertRowid;
-  
-  // Adicionar comandos quânticos
-  if (commands && commands.length > 0) {
-    commands.forEach(cmd => {
-      db.addQuantumCommand({
-        treatmentId,
-        commandName: cmd.name,
-        description: cmd.description,
-        status: cmd.status || 'enviado'
-      });
-    });
-  }
-  
-  // Adicionar setores da vida
-  if (sectors && sectors.length > 0) {
-    sectors.forEach(sector => {
-      db.addLifeSector({
-        treatmentId,
-        sectorNumber: sector.number,
-        sectorName: sector.name,
-        activated: sector.activated
-      });
-    });
-  }
-  
-  const treatment = db.getRadionicTreatment(treatmentId);
-  res.status(201).json(treatment);
-});
-
-app.get('/api/radionic-treatments/:id', verifyToken, (req, res) => {
-  // Apenas terapeutas e admin podem ver detalhes
-  if (req.user.plan !== 'therapist' && req.user.plan !== 'admin') {
-    return res.status(403).json({ error: 'Acesso restrito a terapeutas' });
-  }
-  
-  const treatment = db.getRadionicTreatment(req.params.id);
-  if (!treatment) {
-    return res.status(404).json({ error: 'Tratamento não encontrado' });
-  }
-  res.json(treatment);
-});
-
-// Rota para terapeutas obterem lista de clientes
-app.get('/api/clients', verifyToken, (req, res) => {
-  // Apenas terapeutas e admin podem ver lista de clientes
-  if (req.user.plan !== 'therapist' && req.user.plan !== 'admin') {
-    return res.status(403).json({ error: 'Acesso restrito a terapeutas' });
-  }
-  
-  const clients = db.prepare('SELECT id, name, email, created_at FROM users WHERE plan != "admin" AND plan != "therapist" ORDER BY name').all();
-  res.json(clients);
-});
-
-// Terapeuta: listar avaliações feitas por ele
-app.get('/api/therapist/sessions', verifyToken, (req, res) => {
-  if (req.user.plan !== 'therapist' && req.user.plan !== 'admin') {
-    return res.status(403).json({ error: 'Acesso restrito a terapeutas' });
-  }
-  const sessions = db.getTherapistSessions(req.user.id);
-  res.json(sessions);
 });
 
 // Admin Routes
